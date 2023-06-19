@@ -2,6 +2,7 @@ import hashlib
 import os
 import json
 import requests
+import sys
 
 import openslide
 
@@ -11,6 +12,7 @@ post_url = "http://ca-back:4010/data/Slide/post"
 
 # given a path, get metadata
 def getMetadata(filename, upload_folder, extended):
+    print("getMetadata called", file=sys.stderr)
     # TODO consider restricting filepath
     metadata = {}
     filepath = os.path.join(upload_folder, filename)
