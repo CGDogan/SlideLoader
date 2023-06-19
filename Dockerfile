@@ -1,4 +1,4 @@
-FROM ubuntu:focal
+FROM cgd30/openslide
 
 WORKDIR /var/www
 ARG DEBIAN_FRONTEND=noninteractive
@@ -6,7 +6,7 @@ ENV TZ="America/New_York"
 
 RUN apt-get update
 RUN apt-get -q update --fix-missing
-RUN apt-get -q install -y python3-pip python3-openslide vim
+RUN apt-get -q install -y python3-pip vim
 RUN apt-get -q install -y openssl libcurl4-openssl-dev libssl-dev
 RUN apt-get -q install -y libvips libvips-dev
 
