@@ -1,4 +1,4 @@
-FROM cgd30/openslide
+FROM cgd30/openslide:newv
 
 WORKDIR /var/www
 ARG DEBIAN_FRONTEND=noninteractive
