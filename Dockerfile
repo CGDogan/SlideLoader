@@ -13,8 +13,6 @@ RUN apt-get -q install -y libvips libvips-dev
 RUN apt-get -q install -y wget
 RUN wget https://medistim.com/wp-content/uploads/2016/07/ttfm.dcm
 
-RUN python3 -c "o={};exec(\"import openslide;\nif openslide.OpenSlide.detect_format('ttfm.dcm') is not None:\n\tres='new openslide'\n\",globals(),o);print(o['res'])"
-
 RUN pip install pyvips
 RUN pip install flask
 RUN pip install gunicorn
@@ -32,6 +30,9 @@ COPY ./ ./
 RUN cp test_imgs/* /images/
 
 RUN pip3 install -r requirements.txt
+
+RUN python3 -c "o={};exec(\"import openslide;\nif openslide.OpenSlide.detect_format('ttfm.dcm') is not None:\n\tres='new openslide'\n\",globals(),o);print(o['res'])"
+
 
 
 EXPOSE 4000
