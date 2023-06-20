@@ -10,6 +10,10 @@ RUN apt-get -q install -y python3-pip vim
 RUN apt-get -q install -y openssl libcurl4-openssl-dev libssl-dev
 RUN apt-get -q install -y libvips libvips-dev
 
+RUN pip3 install openslide-python
+RUN python3 -c "o={};exec(\"import openslide;\nif openslide.OpenSlide.detect_format('ttfm.dcm') is not None:\n\tres='new openslide'\n\",globals(),o);print(o['res'])"
+
+
 RUN apt-get -q install -y wget
 RUN wget https://medistim.com/wp-content/uploads/2016/07/ttfm.dcm
 
