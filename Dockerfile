@@ -1,4 +1,11 @@
 FROM cgd30/openslide:newv
+#extra
+RUN apt-get update
+RUN apt-get -q install -y python3-pip vim
+
+RUN pip3 install openslide-python
+RUN python3 -c "o={};exec(\"import openslide;\nif openslide.OpenSlide.detect_format('ttfm.dcm') is not None:\n\tres='new openslide'\n\",globals(),o);print(o['res'])"
+#end extra
 
 WORKDIR /var/www
 ARG DEBIAN_FRONTEND=noninteractive
