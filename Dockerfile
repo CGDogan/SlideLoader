@@ -10,6 +10,9 @@ RUN apt-get -q install -y python3-pip vim
 RUN apt-get -q install -y openssl libcurl4-openssl-dev libssl-dev
 RUN apt-get -q install -y libvips libvips-dev
 
+RUN apt-get -q -y wget
+RUN wget https://medistim.com/wp-content/uploads/2016/07/ttfm.dcm
+
 RUN pip install pyvips
 RUN pip install flask
 RUN pip install gunicorn
@@ -33,8 +36,8 @@ EXPOSE 4000
 EXPOSE 4001
 
 #debug/dev only
-# ENV FLASK_APP SlideServer.py
-# CMD python -m flask run --host=0.0.0.0 --port=4000
+ENV FLASK_APP SlideServer.py
+CMD python -m flask run --host=0.0.0.0 --port=4000
 
 # The Below BROKE the ability for users to upload images.
 # # non-root user
@@ -46,4 +49,4 @@ EXPOSE 4001
 # USER 1001
 
 #prod only
-CMD gunicorn -w 4 -b 0.0.0.0:4000 SlideServer:app --timeout 400
+#CMD gunicorn -w 4 -b 0.0.0.0:4000 SlideServer:app --timeout 400
