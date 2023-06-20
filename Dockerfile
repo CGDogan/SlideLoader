@@ -10,7 +10,7 @@ RUN apt-get -q install -y python3-pip vim
 RUN apt-get -q install -y openssl libcurl4-openssl-dev libssl-dev
 RUN apt-get -q install -y libvips libvips-dev
 
-RUN apt-get -q -y wget
+RUN apt-get -q install -y wget
 RUN wget https://medistim.com/wp-content/uploads/2016/07/ttfm.dcm
 
 RUN pip install pyvips
