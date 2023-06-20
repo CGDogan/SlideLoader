@@ -11,6 +11,7 @@ post_url = "http://ca-back:4010/data/Slide/post"
 
 # given a path, get metadata
 def getMetadata(filename, upload_folder, extended):
+    print("getMetadata called")
     # TODO consider restricting filepath
     metadata = {}
     filepath = os.path.join(upload_folder, filename)
