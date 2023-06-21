@@ -99,7 +99,11 @@ def start_upload():
         tmppath = os.path.join(app.config['TEMP_FOLDER'], token)
     f = open(tmppath, 'a')
     f.close()
-    return flask.Response(json.dumps({"upload_token": token}), status=200)
+    res_body = {"upload_token": token}
+    body = flask.request.get_json()
+    if body and body.get('filename'):
+        res_body['filename'] = secure_filename(body['filename'])
+    return flask.Response(json.dumps(res_body), status=200)
 
 
 # using the token from the start upload endpoint, post data given offset.
