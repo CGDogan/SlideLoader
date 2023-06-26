@@ -5,6 +5,8 @@ ARG DEBIAN_FRONTEND=noninteractive
 ENV TZ="America/New_York"
 
 RUN apt-get update
+RUN apt-get autoclean
+RUn apt-get clean
 RUN apt-get -q update --fix-missing
 RUN apt-get -q install -y python3-pip vim
 
