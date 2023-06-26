@@ -9,13 +9,14 @@ RUN apt-get -q update --fix-missing
 RUN apt-get -q install -y python3-pip vim
 
 RUN apt-get -q install -y openssl libcurl4-openssl-dev libssl-dev
-RUN apt-get -q install -y libvips libvips-dev
+RUN apt-get -q install -y libvips libvips-dev pipx
 
-RUN pip install pyvips
-RUN pip install flask
-RUN pip install gunicorn
-RUN pip install greenlet
-RUN pip install gunicorn[eventlet]
+# https://stackoverflow.com/questions/75608323
+RUN pipx install pyvips
+RUN pipx install flask
+RUN pipx install gunicorn
+RUN pipx install greenlet
+RUN pipx install gunicorn[eventlet]
 
 run openssl version -a
 
