@@ -27,7 +27,7 @@ COPY ./ ./
 
 RUN cp test_imgs/* /images/
 
-RUN pip3 install -r requirements.txt
+RUN pip3 install -r requirements.txt --break-system-packages
 
 
 EXPOSE 4000
