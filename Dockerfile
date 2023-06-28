@@ -11,7 +11,17 @@ RUN apt-get -q update --fix-missing
 RUN apt-get -q install -y python3-pip vim
 
 RUN apt-get -q install -y openssl libcurl4-openssl-dev libssl-dev
-RUN apt-get -q install -y libvips libvips-dev
+
+# Build libvips instead of installing libvips-dev from apt
+RUN git clone https://github.com/libvips/libvips.git --depth 1 --branch 8.13
+RUN cd libvips
+RUN apt-get install libjpeg-turbo8-dev libexif-dev libgsf-1-dev libtiff-dev libfftw3-dev liblcms2-dev libpng-dev libmagickcore-dev libmagickwand-dev liborc-0.4-dev libopenjp2-7
+# Build without OpenSlide to open images with ImageMagick to handle
+# images without pyramids
+RUN meson setup build -Dopenslide=false
+RUN cd build
+RUN ninja
+RUN ninja install
 
 RUN pip install pyvips --break-system-packages
 RUN pip install flask --break-system-packages
