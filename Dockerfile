@@ -14,11 +14,13 @@ RUN apt-get -q install -y openssl libcurl4-openssl-dev libssl-dev
 
 # Build libvips instead of installing libvips-dev from apt
 RUN apt-get -q install -y libjpeg-turbo8-dev libexif-dev libgsf-1-dev libtiff-dev libfftw3-dev liblcms2-dev libpng-dev libmagickcore-dev libmagickwand-dev liborc-0.4-dev libopenjp2-7
-RUN git clone https://github.com/libvips/libvips.git --depth 1 --branch 8.13
+RUN git clone https://github.com/libvips/libvips.git --depth 1 --branch 8.14
 RUN cd libvips
 # Build without OpenSlide to open images with rather ImageMagick to handle
 # images without pyramids
-RUN meson setup build -Dopenslide=false --buildtype release
+RUN ls
+RUN test -e a.txt
+RUN meson setup -Dopenslide=false --buildtype release build
 RUN meson compile -C build
 RUN meson test -C build
 RUN meson install -C build
