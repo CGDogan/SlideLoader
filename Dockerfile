@@ -37,7 +37,7 @@ RUN pip install greenlet --break-system-packages
 RUN pip install gunicorn[eventlet] --break-system-packages
 
 # verify pyvips can call libvips
-RUN python -c "import pyvips"
+RUN python3 -c "import pyvips"
 
 run openssl version -a
 
