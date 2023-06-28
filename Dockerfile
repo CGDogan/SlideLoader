@@ -20,13 +20,15 @@ RUN mkdir /root/src/libvips/build
 WORKDIR /root/src/libvips
 # Build without OpenSlide to open images with rather ImageMagick to handle
 # images without pyramids
-RUN meson setup -Dopenslide=disabled --buildtype release build
+RUN meson setup -Dopenslide=disabled --buildtype=release --prefix=/usr/local/ --libdir=lib build
 RUN meson compile -C build
 RUN meson test -C build
 RUN meson install -C build
 
-# extracted from lines of "meson install" where .so.42 are installed. TODO: for amd64
-ENV LD_LIBRARY_PATH="/usr/local/lib/aarch64-linux-gnu/:${LD_LIBRARY_PATH}"
+# extracted from lines of "meson install" where .so.42 are installed
+
+ENV LD_LIBRARY_PATH="/usr/local/lib/:${LD_LIBRARY_PATH}"
+
 
 RUN pip install pyvips --break-system-packages
 RUN pip install flask --break-system-packages
@@ -34,10 +36,10 @@ RUN pip install gunicorn --break-system-packages
 RUN pip install greenlet --break-system-packages
 RUN pip install gunicorn[eventlet] --break-system-packages
 
-run openssl version -a
-
 # verify pyvips can call libvips
-RUN python3 -c "import pyvips"
+RUN python -c "import pyvips"
+
+run openssl version -a
 
 ENV FLASK_ENV development
 
