@@ -25,6 +25,8 @@ RUN meson compile -C build
 RUN meson test -C build
 RUN meson install -C build
 
+ENV LD_LIBRARY_PATH="/usr/local/lib/aarch64-linux-gnu/:${LD_LIBRARY_PATH}"
+
 RUN pip install pyvips --break-system-packages
 RUN pip install flask --break-system-packages
 RUN pip install gunicorn --break-system-packages
