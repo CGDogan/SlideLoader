@@ -12,22 +12,32 @@ RUN apt-get -q install -y python3-pip vim
 
 RUN apt-get -q install -y openssl libcurl4-openssl-dev libssl-dev
 
-# Build libvips instead of installing libvips-dev from apt
+# Tony has a future use case where we may adapt caMic to GIS visualization
+# install libvips-dev for pyvips. No need for libvips.
+RUN apt-get -q install -y libvips-dev
+
+# But, build libvips instead of installing libvips-dev from apt
+# Build without OpenSlide to open images with rather ImageMagick to handle
+# images without pyramids. Otherwise opens e.g. DICOM with OpenSlide so conversion
+# of files OpenSlide cannot open does not help at all.
+# So, we'll have two copies on openslide on the system.
+# By changing LD_LIBRARY_PATH before we launch python (or before we run pip?)
+# we can choose which openslide to run
 RUN apt-get -q install -y libjpeg-turbo8-dev libexif-dev libgsf-1-dev libtiff-dev libfftw3-dev liblcms2-dev libpng-dev libmagickcore-dev libmagickwand-dev liborc-0.4-dev libopenjp2-7 libgirepository1.0-dev
 WORKDIR /root/src
 RUN git clone https://github.com/libvips/libvips.git --depth=1 --branch=8.14
 RUN mkdir /root/src/libvips/build
 WORKDIR /root/src/libvips
-# Build without OpenSlide to open images with rather ImageMagick to handle
-# images without pyramids
-RUN meson setup -Dopenslide=disabled --buildtype=release --prefix=/usr/local/ --libdir=lib build
+RUN mkdir /usr/local/vips-no-openslide/
+# normally --prefix=/usr/local/ --libdir=lib build
+RUN meson setup -Dopenslide=disabled --buildtype=release --prefix=/usr/local/vips-no-openslide/ --libdir=lib build
 RUN meson compile -C build
 RUN meson test -C build
 RUN meson install -C build
 
-# extracted from lines of "meson install" where .so.42 are installed
-
-ENV LD_LIBRARY_PATH="/usr/local/lib/:${LD_LIBRARY_PATH}"
+# the path show in output lines of "meson install" where .so.42 are installed
+# normally /usr/local/lib/:
+ENV LD_LIBRARY_PATH="/usr/local/vips-no-openslide/lib/:${LD_LIBRARY_PATH}"
 
 
 RUN pip install pyvips --break-system-packages
@@ -38,6 +48,8 @@ RUN pip install gunicorn[eventlet] --break-system-packages
 
 # verify pyvips can call libvips
 RUN python3 -c "import pyvips"
+ADD test_imgs/CMU-1-Small-Region.svs .
+RUN python3 -c "import pyvips; pyvips.Image.openslideload(('CMU-1-Small-Region.svs'))"
 
 run openssl version -a
 
