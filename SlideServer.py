@@ -52,6 +52,10 @@ ALLOWED_EXTENSIONS = set(['svs', 'tif', 'tiff', 'vms', 'vmu', 'ndpi', 'scn', 'mr
 
 
 def allowed_file(filename):
+    if '.' in filename:
+           print("first cond ok for filename " + filename)
+    if not (filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS):
+           print("not ok: ": filename.rsplit('.', 1)[1].lower()) 
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
