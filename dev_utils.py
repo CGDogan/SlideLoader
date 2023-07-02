@@ -27,10 +27,16 @@ def getMetadata(filename, upload_folder, extended):
         msg = {"type": "Openslide", "error": str(e)}
         print(msg)
         return msg
-    slideData = slide
     print("Slidedata!")
     print(slide)
-    print(slide.level_count)
+    try:
+        print(slide.level_count())
+    except BaseException as e:
+        msg = {"type": "Openslide", "error": str(e)}
+        print(msg)
+        return msg
+    #print(slide.level_count)
+    slideData = slide.properties
 
     if extended:
         return {k:v for (k,v) in slideData.items()}
