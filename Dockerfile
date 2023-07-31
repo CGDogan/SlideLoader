@@ -25,7 +25,7 @@ RUN apt-get -q install -y libvips-dev
 # we can choose which openslide to run
 RUN apt-get -q install -y libjpeg-turbo8-dev libexif-dev libgsf-1-dev libtiff-dev libfftw3-dev liblcms2-dev libpng-dev libmagickcore-dev libmagickwand-dev liborc-0.4-dev libopenjp2-7 libgirepository1.0-dev
 WORKDIR /root/src
-RUN git clone https://github.com/cgd30/libvips.git --depth=1 --branch=patch-1
+RUN git clone https://github.com/cgdogan/libvips.git --depth=1 --branch=patch-1
 RUN mkdir /root/src/libvips/build
 WORKDIR /root/src/libvips
 RUN mkdir /usr/local/vips-no-openslide/
