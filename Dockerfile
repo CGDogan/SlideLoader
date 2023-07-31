@@ -30,7 +30,7 @@ RUN mkdir /root/src/libvips/build
 WORKDIR /root/src/libvips
 RUN mkdir /usr/local/vips-no-openslide/
 # normally --prefix=/usr/local/ --libdir=lib build
-RUN meson setup -Dopenslide=disabled --buildtype=release --prefix=/usr/local/vips-no-openslide/ --libdir=lib build
+RUN meson setup -Dopenjpeg=enabled -Dopenslide=disabled --buildtype=release --prefix=/usr/local/vips-no-openslide/ --libdir=lib build
 RUN meson compile -C build
 RUN meson test -C build
 RUN meson install -C build
