@@ -222,14 +222,14 @@ bfbridge_error_t *bfbridge_make_library(
         bfbridge_basiclib_string_t *error = allocate_string("FindClass failed because org.camicroscope.BFBridge (or a dependency of it) could not be found. Are the jars in: ");
         append_to_string(error, path_arg->str);
 
-        if (BFENVA(env, ExceptionCheck) == 1)
+        if (BFENVAV(env, ExceptionCheck) == 1)
         {
-            BFENVA(env, ExceptionDescribe);
+            BFENVAV(env, ExceptionDescribe);
             append_to_string(error, "? An exception was printed to stderr.");
         }
 
         free_string(path_arg);
-        BFENVA(jvm, DestroyJavaVM);
+        BFENVAV(jvm, DestroyJavaVM);
 
         bfbridge_error_t *err = make_error(BFBRIDGE_CLASS_NOT_FOUND, error->str, NULL);
         free_string(error);
@@ -244,7 +244,7 @@ bfbridge_error_t *bfbridge_make_library(
     dest->constructor = BFENVA(env, GetMethodID, bfbridge_base, "<init>", "()V");
     if (!dest->constructor)
     {
-        BFENVA(jvm, DestroyJavaVM);
+        BFENVAV(jvm, DestroyJavaVM);
         return make_error(BFBRIDGE_METHOD_NOT_FOUND, "Could not find BFBridge constructor", NULL);
     }
 
@@ -254,7 +254,7 @@ bfbridge_error_t *bfbridge_make_library(
         BFENVA(env, GetMethodID, bfbridge_base, #name, descriptor); \
     if (!dest->name)                                                \
     {                                                               \
-        BFENVA(jvm, DestroyJavaVM);                                 \
+        BFENVAV(jvm, DestroyJavaVM);                                 \
         return make_error(                                          \
             BFBRIDGE_METHOD_NOT_FOUND,                              \
             "Could not find BFBridge method ",                      \
@@ -335,7 +335,7 @@ void bfbridge_free_library(bfbridge_library_t *lib)
     // Ease of freeing
     if (lib->jvm)
     {
-        BFENVA(lib->jvm, DestroyJavaVM);
+        BFENVAV(lib->jvm, DestroyJavaVM);
     }
     // Now, after DestroyJavaVM, there's no need to free bfbridge_base
     // DetachCurrentThread would also free this reference
@@ -386,10 +386,10 @@ bfbridge_error_t *bfbridge_make_instance(
                communication_buffer_len);
     if (!buffer)
     {
-        if (BFENVA(env, ExceptionCheck) == 1)
+        if (BFENVAV(env, ExceptionCheck) == 1)
         {
             // As of JDK 20, NewDirectByteBuffer only raises OutOfMemoryError
-            BFENVA(env, ExceptionDescribe);
+            BFENVAV(env, ExceptionDescribe);
             BFENVA(env, DeleteGlobalRef, bfbridge);
 
             return make_error(
