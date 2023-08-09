@@ -17,12 +17,13 @@
 #define JNI_EINVAL ...
 
 // Our macros
+
 // Our library won't use header only mode with CFFI as it needs to include jvm.h
 // #define BFBRIDGE_INLINE_ME
 // #define BFBRIDGE_INLINE_ME_EXTRA
-// EDIT: It seems that CFFI doesn't support function attribute macros
-// even if it's empty. Find and replace from python.
-// https://github.com/cffi/cffi/issues/367
+// EDIT: CFFI doesn't support #defines for other than integers
+// (decimal,hex,octal,ellipsis), even if it's empty.
+// Find and replace from Python.
 
 // As the docs linked above says, typedef struct { ...; } foo_t; is an alternative
 // but full opaqueness is fine for us.
