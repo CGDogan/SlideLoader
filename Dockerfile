@@ -1,4 +1,5 @@
-FROM cgd30/openslide:v8main
+#FROM cgd30/openslide:v8main
+FROM cgd30/decoders:jvmv16
 
 WORKDIR /var/www
 ARG DEBIAN_FRONTEND=noninteractive

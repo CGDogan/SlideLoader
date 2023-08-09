@@ -14,7 +14,11 @@ Free can be called for both the library and the instance
 because the makers set to null if going to fail
 so you can call free regardless of whether the makers failed.
 
-But you can make instance if library call failed
+But you can make instance if library call failed.
+And now hopefully you can make and free instance after library make failed
+
+Not handled: calling free functions will NULL: as allocation
+takes outside of this library and responsibility of the user
 */
 
 // If inlining but erroneously still compiling .c, make it empty
@@ -23,6 +27,7 @@ But you can make instance if library call failed
 #include "bfbridge_basiclib.h"
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 
 #ifdef WIN32
 #include <windows.h>
@@ -336,6 +341,9 @@ void bfbridge_free_library(bfbridge_library_t *lib)
     if (lib->jvm)
     {
         BFENVAV(lib->jvm, DestroyJavaVM);
+        // Ease of freeing: make the attempt to free an instance
+        // after the library a no-op
+        lib->jvm = NULL;
     }
     // Now, after DestroyJavaVM, there's no need to free bfbridge_base
     // DetachCurrentThread would also free this reference
@@ -456,7 +464,7 @@ void bfbridge_free_instance(
     bfbridge_instance_t *instance, bfbridge_library_t *library)
 {
     // Ease of freeing
-    if (instance->bfbridge)
+    if (instance->bfbridge && library->jvm)
     {
         BFENVA(library->env, DeleteGlobalRef, instance->bfbridge);
     }

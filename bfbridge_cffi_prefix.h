@@ -7,14 +7,14 @@
 
 // Normally constant are in:
 // https://docs.oracle.com/en/java/javase/20/docs/specs/jni/functions.html#constants
-// but we currently use just the following:
+// but we could use just the following:
 
-#define JNI_ERR ...
+/*#define JNI_ERR ...
 #define JNI_EDETACHED ...
 #define JNI_EVERSION ...
 #define JNI_ENOMEM ...
 #define JNI_EEXIST ...
-#define JNI_EINVAL ...
+#define JNI_EINVAL ...*/
 
 // Our macros
 
@@ -25,14 +25,16 @@
 // (decimal,hex,octal,ellipsis), even if it's empty.
 // Find and replace from Python.
 
-// As the docs linked above says, typedef struct { ...; } foo_t; is an alternative
-// but full opaqueness is fine for us.
+// As the docs linked above says, typedef ... foo_t; is an alternative
+// but full opaqueness is not fine for us.
+// An alternative is: typedef struct { ... } * foo_t; which is true in C
+// but not in C++
 
-typedef... JavaVM;
-typedef... JNIEnv;
-typedef... jclass;
-typedef... jmethodID;
-typedef... jobject;
+typedef... *JavaVM;
+typedef... *JNIEnv;
+typedef... *jclass;
+typedef... *jmethodID;
+typedef... *jobject;
 
 // Include is not supported, so append to it from Python
 // #include "bfbridge_header__inner.h"
