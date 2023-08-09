@@ -80,7 +80,7 @@ static bfbridge_basiclib_string_t *allocate_string(const char *initial)
     return bbs;
 }
 
-static void free_string(bfbridge_basiclib_string *bbs)
+static void free_string(bfbridge_basiclib_string_t *bbs)
 {
     free(bbs->str);
     free(bbs);
