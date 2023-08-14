@@ -1,9 +1,4 @@
 from abc import ABC, ABCMeta, abstractmethod
-import OpenSlideReader
-import BioFormatsReader
-
-# Decreasing order of importance
-readers = [OpenSlideReader, BioFormatsReader]
 
 # Allow near drop-in replacements for OpenSlide-Python
 class ImageReader(ABC, metaclass=ABCMeta):
@@ -15,6 +10,11 @@ class ImageReader(ABC, metaclass=ABCMeta):
     # Pick the reader
     # Returns None if no compatible reader was found
     def __init__(imagepath):
+        import OpenSlideReader
+        import BioFormatsReader
+
+        # Decreasing order of importance
+        readers = [OpenSlideReader, BioFormatsReader]
         reader = None
         for r in readers:
             try:
