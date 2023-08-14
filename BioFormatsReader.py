@@ -32,9 +32,9 @@ class BioFormats(ImageReader):
         return None
 
     def read_region(self, location, level, size):
-        self.bfinstance.set_current_resolution(level)
-        return self.bfinstance.open_bytes_pil_image(0, \
+        self.reader.set_current_resolution(level)
+        return self.reader.open_bytes_pil_image(0, \
             location[0], location[1], size[0], size[1])
 
     def get_thumbnail(self, max_size):
-        return self.get_thumbnail(max_size)
+        return self.reader.open_thumb_bytes_pil_image(0, max_size[0], max_size[1])
