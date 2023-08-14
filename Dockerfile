@@ -75,12 +75,13 @@ ENV FLASK_ENV development
 
 RUN mkdir -p /images/uploading
 
-COPY ./ ./
+COPY requirements.txt requirements.txt
 
 RUN cp test_imgs/* /images/
 
 RUN pip3 install -r requirements.txt --break-system-packages
 
+COPY ./ ./
 
 EXPOSE 4000
 EXPOSE 4001
