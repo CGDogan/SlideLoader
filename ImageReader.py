@@ -1,4 +1,4 @@
-from abc import ABC, ABCMeta, static_method, abstractmethod
+from abc import ABC, ABCMeta, abstractmethod
 import OpenSlideReader
 import BioFormatsReader
 
