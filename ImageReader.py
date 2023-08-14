@@ -25,14 +25,17 @@ class ImageReader(ABC, metaclass=ABCMeta):
                 continue
         return reader
     
+    @property
     @abstractmethod
     def level_count(self):
         pass
 
+    @property
     @abstractmethod
     def dimensions(self):
         pass
 
+    @property
     @abstractmethod
     def level_dimensions(self):
         pass

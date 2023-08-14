@@ -14,7 +14,7 @@ import urllib
 import flask
 import flask_cors
 from flask import request
-import openslide
+import ImageReader
 from werkzeug.utils import secure_filename
 import dev_utils
 import requests
@@ -78,13 +78,14 @@ def getThumbnail(filename, size=50):
     if not os.path.isfile(filepath):
         return {"error": "No such file"}
     try:
-        slide = openslide.OpenSlide(filepath)
+        slide = ImageReader(filepath)
         thumb = slide.get_thumbnail((size, size))
         buffer = BytesIO()
         thumb.save(buffer, format="PNG")
         data = 'data:image/png;base64,' + str(base64.b64encode(buffer.getvalue()))[2:-1]
         return {"slide": data, "size": size}
     except BaseException as e:
+        # TODO: if in openslide list, get error message from openslide
         return {"type": "Openslide", "error": str(e)}
 
 @app.route('/slide/<filename>/pyramid/<dest>', methods=['POST'])
@@ -508,7 +509,7 @@ def convert(fname, input_dir , output_dir):
     try:
         
         save_name = fname.split(".")[0] + ".jpg"
-        os_obj = openslide.OpenSlide(input_dir+"/"+fname)
+        os_obj = ImageReader(input_dir+"/"+fname)
         w, h = os_obj.dimensions
         w_rep, h_rep = int(w/UNIT_X)+1, int(h/UNIT_Y)+1
         w_end, h_end = w%UNIT_X, h%UNIT_Y
@@ -561,7 +562,7 @@ def roiExtract():
         
     download_patches.close()
 
-    # img = openslide.OpenSlide.read_region((0,0),0,(100,100))
+    # img = ImageReader.read_region((0,0),0,(100,100))
     # img = slide.open_image(img_path)
     # res= { "data" :"" }
     # res['data']= pred
