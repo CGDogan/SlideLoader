@@ -14,7 +14,8 @@ class ImageReader(ABC, metaclass=ABCMeta):
         import BioFormatsReader
 
         # Decreasing order of importance
-        readers = [OpenSlideReader, BioFormatsReader]
+        #readers = [OpenSlideReader, BioFormatsReader]
+        readers = [BioFormatsReader]
         reader = None
         for r in readers:
             try:
