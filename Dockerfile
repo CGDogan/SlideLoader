@@ -75,7 +75,7 @@ ENV FLASK_ENV development
 
 RUN mkdir -p /images/uploading
 
-COPY requirements.txt requirements.txt
+COPY requirements.txt .
 
 RUN cp test_imgs/* /images/
 
