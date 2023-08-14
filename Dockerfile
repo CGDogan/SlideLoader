@@ -77,11 +77,12 @@ RUN mkdir -p /images/uploading
 
 COPY requirements.txt .
 
-RUN cp test_imgs/* /images/
 
 RUN pip3 install -r requirements.txt --break-system-packages
 
 COPY ./ ./
+RUN cp test_imgs/* /images/
+
 
 EXPOSE 4000
 EXPOSE 4001
