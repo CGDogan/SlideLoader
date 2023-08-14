@@ -78,7 +78,7 @@ def getThumbnail(filename, size=50):
     if not os.path.isfile(filepath):
         return {"error": "No such file"}
     try:
-        slide = ImageReader(filepath)
+        slide = ImageReader.ImageReader(filepath)
         thumb = slide.get_thumbnail((size, size))
         buffer = BytesIO()
         thumb.save(buffer, format="PNG")
