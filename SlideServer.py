@@ -82,6 +82,9 @@ def getThumbnail(filename, size=50):
         thumb = slide.get_thumbnail((size, size))
         buffer = BytesIO()
         thumb.save(buffer, format="PNG")
+        print("Buffer len: ")
+        print(len(buffer))
+        print(thumb)
         data = 'data:image/png;base64,' + str(base64.b64encode(buffer.getvalue()))[2:-1]
         return {"slide": data, "size": size}
     except BaseException as e:
