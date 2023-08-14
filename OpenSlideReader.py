@@ -1,7 +1,7 @@
 import openslide
 import ImageReader
 
-class OpenSlideReader(ImageReader):
+class OpenSlideReader(ImageReader.ClassName):
     def reader_name(self):
         return "openslide"
 
