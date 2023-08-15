@@ -17,7 +17,6 @@ class BioFormatsReader(ImageReader.ImageReader):
         print("__init__ called", flush=True)
         print("TrID instance:")
         print(threading.get_ident(), flush=True)
-        BioFormatsThreadGlobal = bfbridge.BFBridgeThread()
         self.reader = bfbridge.BFBridgeInstance(BioFormatsThreadGlobal)
         print("__init__ called2", flush=True)
         self.reader.open(imagepath)
