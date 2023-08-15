@@ -1,7 +1,7 @@
-from abc import ABC, ABCMeta, abstractmethod
+from abc import ABCMeta, abstractmethod
 
 # Allow near drop-in replacements for OpenSlide-Python
-class ImageReader(ABC, metaclass=ABCMeta):
+class ImageReader(metaclass=ABCMeta):
     # currently: "openslide", "bioformats"
     @abstractmethod
     def reader_name(self):

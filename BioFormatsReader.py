@@ -30,17 +30,17 @@ class BioFormatsReader(ImageReader.ImageReader):
         print("__init__ called2", flush=True)
         self.reader.open(imagepath)
         print("__init__ called3", flush=True)
-        self.level_count = self.reader.get_resolution_count()
+        self.level_count_ = self.reader.get_resolution_count()
         self.dimensions = (self.reader.get_size_x(), self.reader.get_size_y())
         self.level_dimensions = [self.dimensions]
-        for l in range(1, self.level_count):
+        for l in range(1, self.level_count_):
             self.reader.set_current_resolution(l)
             self.level_dimensions.append( \
                 (self.reader.get_size_x(), self.reader.get_size_y()))
 
     @property
     def level_count(self):
-        return self.level_count
+        return self.level_count_
 
     @property
     def dimensions(self):
