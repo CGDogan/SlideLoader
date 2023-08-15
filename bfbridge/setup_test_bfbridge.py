@@ -64,6 +64,9 @@ java_link = os.path.join(java_home, "lib/server")
 # https://github.com/openjdk/jdk/blob/6e3cc131daa9f3b883164333bdaad7aa3a6ca018/src/jdk.hotspot.agent/share/classes/sun/jvm/hotspot/utilities/PlatformInfo.java#L32
 java_include = [java_include, os.path.join(java_include, "linux"), os.path.join(java_include, "darwin"), os.path.join(java_include, "win32"), os.path.join(java_include, "bsd")]
 
+print("JAVA include:")
+print(java_include)
+
 extra_link_args = []
 
 if os.name != "nt":
