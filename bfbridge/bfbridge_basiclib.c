@@ -408,6 +408,7 @@ bfbridge_error_t *bfbridge_make_instance(
     // Should be freed: bfbridge
     jobject bfbridge = (jobject)BFENVA(env, NewGlobalRef, bfbridge_local);
     BFENVA(env, DeleteLocalRef, bfbridge_local);
+    printf("c: makeinstance25\n");
 
     // Should be freed: bfbridge, buffer (the jobject only)
     jobject buffer =
