@@ -26,39 +26,43 @@ class BioFormatsReader(ImageReader.ImageReader):
             save_thread_local_object(bfthread)
         if bfthread is None:
             raise failure
-        self.reader = bfbridge.BFBridgeInstance(bfthread)
+        # Conventionally internal attributes start with underscore.
+        # When using them without underscore, there's the risk that
+        # a property has the same name as a/the getter, which breaks
+        # the abstract class. Hence all internal attributes start with underscore.
+        self._bfreader = bfbridge.BFBridgeInstance(bfthread)
         print("__init__ called2", flush=True)
-        self.reader.open(imagepath)
+        self._bfreader.open(imagepath)
         print("__init__ called3", flush=True)
-        self.level_count_ = self.reader.get_resolution_count()
-        self.dimensions = (self.reader.get_size_x(), self.reader.get_size_y())
-        self.level_dimensions = [self.dimensions]
-        for l in range(1, self.level_count_):
-            self.reader.set_current_resolution(l)
-            self.level_dimensions.append( \
-                (self.reader.get_size_x(), self.reader.get_size_y()))
+        self._level_count = self._bfreader.get_resolution_count()
+        self._dimensions = (self._bfreader.get_size_x(), self._bfreader.get_size_y())
+        self._level_dimensions = [self._dimensions]
+        for l in range(1, self._level_count):
+            self._bfreader.set_current_resolution(l)
+            self._level_dimensions.append( \
+                (self._bfreader.get_size_x(), self._bfreader.get_size_y()))
 
     @property
     def level_count(self):
-        return self.level_count_
+        return self._level_count
 
     @property
     def dimensions(self):
-        return self.dimensions
+        return self._dimensions
 
     @property
     def level_dimensions(self):
-        return self.level_dimensions
+        return self._level_dimensions
     
     @property
     def associated_images(self):
         return None
 
     def read_region(self, location, level, size):
-        self.reader.set_current_resolution(level)
-        return self.reader.open_bytes_pil_image(0, \
+        self._bfreader.set_current_resolution(level)
+        return self._bfreader.open_bytes_pil_image(0, \
             location[0], location[1], size[0], size[1])
 
     def get_thumbnail(self, max_size):
         print("Starting BioFormatsReader get_thumbnail", flush=True)
-        return self.reader.open_thumb_bytes_pil_image(0, max_size[0], max_size[1])
+        return self._bfreader.open_thumb_bytes_pil_image(0, max_size[0], max_size[1])
