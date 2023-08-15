@@ -11,6 +11,7 @@ class ImageReader(ABC, metaclass=ABCMeta):
     # Returns None if no compatible reader was found
     def __init__(imagepath):
         print("start init?")
+        self.reader_name = None
         import OpenSlideReader
         import BioFormatsReader
         print("end init?")
