@@ -44,6 +44,7 @@ def ImageReader(imagepath):
     readers = [OpenSlideReader, BioFormatsReader]
     reader = None
     for r in readers:
+        print("trying one")
         try:
             reader = r.open_image(imagepath)
         except:
