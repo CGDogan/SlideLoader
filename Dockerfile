@@ -82,6 +82,7 @@ RUN pip3 install -r requirements.txt --break-system-packages
 
 COPY ./ ./
 RUN cp test_imgs/* /images/
+RUN cd bfbridge && python3 setup_test_bfbridge.py
 
 
 EXPOSE 4000
