@@ -79,7 +79,7 @@ def getThumbnail(filename, size=50):
         return {"error": "No such file"}
     try:
         print("getThumbnail called", flush=True)
-        slide = ImageReader.for_file(filepath)
+        slide = ImageReader(filepath)
         print("getThumbnail called")
         thumb = slide.get_thumbnail((size, size))
         buffer = BytesIO()

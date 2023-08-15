@@ -142,7 +142,7 @@ class BFBridgeThread:
         self.bfbridge_library = ffi.new("bfbridge_library_t*")
 
         cpdir = os.environ.get("BFBRIDGE_CLASSPATH")
-        if cpdir is None:
+        if cpdir is None or cpdir == "":
             print("Please set BFBRIDGE_CLASSPATH to a single dir containing the jar files")
             sys.exit(1)
         cpdir_arg = ffi.new("char[]", cpdir.encode())

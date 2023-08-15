@@ -37,9 +37,9 @@ class ImageReader(ABC, metaclass=ABCMeta):
 import OpenSlideReader
 import BioFormatsReader
 
-# Pick the reader
+# Return a reader
 # Returns None if no compatible reader was found
-def for_file(self, imagepath):
+def ImageReader(imagepath):
     # Decreasing order of importance
     readers = [OpenSlideReader, BioFormatsReader]
     reader = None
@@ -51,5 +51,3 @@ def for_file(self, imagepath):
         if reader is None:
             continue
     return reader
-
-ImageReader.for_file = for_file
