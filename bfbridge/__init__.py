@@ -233,6 +233,7 @@ class BFBridgeInstance:
         file = ffi.new("char[]", filepath)
         filepathlen = len(file) - 1
         res = lib.bf_open(self.bfbridge_instance, self.bfbridge_library, filepath, filepathlen)
+        print(self.get_error_string(), flush=True)
         return res
     
     def get_format(self):
