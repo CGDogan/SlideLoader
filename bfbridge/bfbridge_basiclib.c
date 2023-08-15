@@ -370,11 +370,16 @@ bfbridge_error_t *bfbridge_make_instance(
     char *communication_buffer,
     int communication_buffer_len)
 {
+    printf("c: makeinstance0\n");
     // Ease of freeing
     dest->bfbridge = NULL;
+    printf("c: makeinstance01\n");
     dest->communication_buffer = communication_buffer;
+    printf("c: makeinstance02\n");
 #ifndef BFBRIDGE_KNOW_BUFFER_LEN
     dest->communication_buffer_len = communication_buffer_len;
+    printf("c: makeinstance03\n");
+
 #endif
     printf("c: makeinstance1\n");
     if (!library->jvm)
