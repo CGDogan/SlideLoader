@@ -222,6 +222,7 @@ def singleSlide(filepath):
 
 @app.route("/data/thumbnail/<filepath>", methods=['GET'])
 def singleThumb(filepath):
+    print("Called gethumbnail")
     size = flask.request.args.get('size', default=50, type=int)
     res = getThumbnail(filepath, size)
     if (hasattr(res, 'error')):
