@@ -86,7 +86,7 @@ def getThumbnail(filename, size=50):
         buffer = BytesIO()
         thumb.save(buffer, format="PNG")
         print("Buffer len: ")
-        print(len(buffer))
+        #print(len(buffer))
         print(thumb)
         print("", flush=True)
 
