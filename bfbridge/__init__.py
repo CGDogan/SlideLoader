@@ -156,6 +156,7 @@ class BFBridgeThread:
         potential_error = lib.bfbridge_make_library(self.bfbridge_library, cpdir_arg, cachedir_arg)
         if potential_error != ffi.NULL:
             print(ffi.string(potential_error[0].description))
+            # free error here optionally
             sys.exit(1)
 
     # Before Python 3.4: https://stackoverflow.com/a/8025922
@@ -186,6 +187,7 @@ class BFBridgeInstance:
         print("Made instance in __init__.py", flush=True)
         if potential_error != ffi.NULL:
             print(ffi.string(potential_error[0].description))
+            # free error here optionally
             sys.exit(1)
 
     def __del__(self):
