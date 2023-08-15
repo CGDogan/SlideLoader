@@ -9,8 +9,7 @@ class ImageReader(ABC, metaclass=ABCMeta):
 
     # Pick the reader
     # Returns None if no compatible reader was found
-    def __init__(imagepath):
-        print("start init?")
+    def __init__(self, imagepath):
         self.reader_name = lambda a: None
         import OpenSlideReader
         import BioFormatsReader
@@ -20,7 +19,7 @@ class ImageReader(ABC, metaclass=ABCMeta):
         reader = None
         for r in readers:
             try:
-                reader = r.open_image()
+                reader = r.open_image(imagepath)
             except:
                 continue
             if reader is None:
