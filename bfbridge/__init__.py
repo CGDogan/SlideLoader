@@ -175,11 +175,13 @@ class BFBridgeInstance:
         self.bfbridge_instance = ffi.new("bfbridge_instance_t*")
         self.communication_buffer = ffi.new("char[34000000]")
         self.communication_buffer_len = 34000000
+        print("About to make instance in __init__.py")
         potential_error = lib.bfbridge_make_instance(
             self.bfbridge_instance,
             self.bfbridge_library,
             self.communication_buffer,
             self.communication_buffer_len)
+        print("Made instance in __init__.py")
         if potential_error != ffi.NULL:
             print(ffi.string(potential_error[0].description))
             sys.exit(1)
