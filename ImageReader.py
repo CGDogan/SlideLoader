@@ -10,9 +10,10 @@ class ImageReader(ABC, metaclass=ABCMeta):
     # Pick the reader
     # Returns None if no compatible reader was found
     def __init__(imagepath):
+        print("start init?")
         import OpenSlideReader
         import BioFormatsReader
-
+        print("end init?")
         # Decreasing order of importance
         readers = [OpenSlideReader, BioFormatsReader]
         reader = None
