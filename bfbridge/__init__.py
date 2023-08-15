@@ -148,12 +148,14 @@ class BFBridgeThread:
         if cachedir is not None and cachedir != "":
             cachedir_arg = ffi.new("char[]", cachedir.encode())
 
+        # TODO: remove ffi.null with cpdir_arg
         potential_error = lib.bfbridge_make_library(self.bfbridge_library, ffi.NULL, cachedir_arg)
         if potential_error != ffi.NULL:
-            print("Testing relevant code")
+            print("Testing relevant code", flush=True)
             lib.bfbridge_free_error(potential_error)
             err = ffi.string(potential_error[0].description)
-            print(err)
+            print("see?")
+            print(err, flush=True)
             raise RuntimeError(err)
         self.owner_thread = threading.get_ident()
 
