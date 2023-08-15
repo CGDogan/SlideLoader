@@ -6,25 +6,6 @@ class ImageReader(ABC, metaclass=ABCMeta):
     @abstractmethod
     def reader_name(self):
         return None
-
-    # Pick the reader
-    # Returns None if no compatible reader was found
-    def __init__(self, imagepath):
-        self.reader_name = lambda a: None
-        import OpenSlideReader
-        import BioFormatsReader
-        print("end init?")
-        # Decreasing order of importance
-        readers = [OpenSlideReader, BioFormatsReader]
-        reader = None
-        for r in readers:
-            try:
-                reader = r.open_image(imagepath)
-            except:
-                continue
-            if reader is None:
-                continue
-        return reader
     
     @property
     @abstractmethod
@@ -52,3 +33,23 @@ class ImageReader(ABC, metaclass=ABCMeta):
     @abstractmethod
     def get_thumbnail(self, max_size):
         pass
+
+import OpenSlideReader
+import BioFormatsReader
+
+# Pick the reader
+# Returns None if no compatible reader was found
+def for_file(self, imagepath):
+    # Decreasing order of importance
+    readers = [OpenSlideReader, BioFormatsReader]
+    reader = None
+    for r in readers:
+        try:
+            reader = r.open_image(imagepath)
+        except:
+            continue
+        if reader is None:
+            continue
+    return reader
+
+ImageReader.for_file = for_file
