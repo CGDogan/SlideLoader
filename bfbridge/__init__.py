@@ -161,7 +161,7 @@ class BFBridgeThread:
         print("destroying BFBridgeThread")
         # C code takes care to not free if it wasn't initialized successfully
         # but we need to take care about the Python counterpart
-        if self.bfbridge_library is not None:
+        if hasattr(self, "bfbridge_library"):
             lib.bfbridge_free_library(self.bfbridge_library)
         print("destroyinged BFBridgeThread")
 
@@ -195,7 +195,7 @@ class BFBridgeInstance:
 
     def __del__(self):
         print("destroying BFBridgeInstance")
-        if self.bfbridge_instance is not None:
+        if hasattr(self, "bfbridge_instance"):
             lib.bfbridge_free_instance(self.bfbridge_instance, self.bfbridge_library)
         print("destroyinged BFBridgeInstance")
 
