@@ -159,7 +159,10 @@ class BFBridgeThread:
     # Now we can define __del__
     def __del__(self):
         print("destroying BFBridgeThread")
-        lib.bfbridge_free_library(self.bfbridge_library)
+        # C code takes care to not free if it wasn't initialized successfully
+        # but we need to take care about the Python counterpart
+        if self.bfbridge_library is not None:
+            lib.bfbridge_free_library(self.bfbridge_library)
         print("destroyinged BFBridgeThread")
 
 # An instance can be used with only the library object it was constructed with
@@ -192,7 +195,8 @@ class BFBridgeInstance:
 
     def __del__(self):
         print("destroying BFBridgeInstance")
-        lib.bfbridge_free_instance(self.bfbridge_instance, self.bfbridge_library)
+        if self.bfbridge_instance is not None:
+            lib.bfbridge_free_instance(self.bfbridge_instance, self.bfbridge_library)
         print("destroyinged BFBridgeInstance")
 
     def __return_from_buffer(self, length, isString):
