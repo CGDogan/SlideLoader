@@ -3,7 +3,7 @@ import bfbridge
 
 # might need to be converted to a dict of threading.get_ident to BFBridgeThread
 # with access trhough a mutex
-BioFormatsThreadGlobal = bfbridge.BFBridgeThread()
+#BioFormatsThreadGlobal = bfbridge.BFBridgeThread()
 
 class BioFormatsReader(ImageReader.ImageReader):
     def reader_name(self):
@@ -12,6 +12,7 @@ class BioFormatsReader(ImageReader.ImageReader):
     # Pick the reader
     def __init__(self, imagepath):
         print("__init__ called", flush=True)
+        BioFormatsThreadGlobal = bfbridge.BFBridgeThread()
         self.reader = bfbridge.BFBridgeInstance(BioFormatsThreadGlobal)
         print("__init__ called2", flush=True)
         self.reader.open(imagepath)
