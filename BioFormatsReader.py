@@ -1,12 +1,12 @@
 import ImageReader
 import bfbridge
-import threading
+from bfbridge.global_thread_manager import check_out_thread_local_object, save_thread_local_object
 
 # might need to be converted to a dict of threading.get_ident to BFBridgeThread
 # with access trhough a mutex
-BioFormatsThreadGlobal = bfbridge.BFBridgeThread()
-print("TrID initialize:")
-print(threading.get_ident(), flush=True)
+##BioFormatsThreadGlobal = bfbridge.BFBridgeThread()
+#print("TrID initialize:")
+#print(threading.get_ident(), flush=True)
 
 class BioFormatsReader(ImageReader.ImageReader):
     def reader_name(self):
@@ -16,8 +16,17 @@ class BioFormatsReader(ImageReader.ImageReader):
     def __init__(self, imagepath):
         print("__init__ called", flush=True)
         print("TrID instance:")
-        print(threading.get_ident(), flush=True)
-        self.reader = bfbridge.BFBridgeInstance(BioFormatsThreadGlobal)
+        #print(threading.get_ident(), flush=True)
+        bfthread = check_out_thread_local_object()
+        if bfthread is None:
+            try:
+                bfthread = bfbridge.BFBridgeThread()
+            except Exception as f:
+                failure = f
+            save_thread_local_object(bfthread)
+        if bfthread is None:
+            raise failure
+        self.reader = bfbridge.BFBridgeInstance(bfthread)
         print("__init__ called2", flush=True)
         self.reader.open(imagepath)
         print("__init__ called3", flush=True)
