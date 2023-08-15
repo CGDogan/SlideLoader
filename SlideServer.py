@@ -228,7 +228,6 @@ def singleThumb(filepath):
     size = flask.request.args.get('size', default=50, type=int)
     print("Called gethumbnail", flush=True)
     size = max(size, 500)
-    size = 500
     res = getThumbnail(filepath, size)
     if (hasattr(res, 'error')):
         return flask.Response(json.dumps(res), status=500)

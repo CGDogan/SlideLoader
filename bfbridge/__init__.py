@@ -175,7 +175,7 @@ class BFBridgeInstance:
 
         self.owner_thread = threading.get_ident()
         if self.owner_thread != bfbridge_thread.owner_thread:
-            raise AssertionError("BFBridgeInstance being made belongs to a different thread than BFBridgeThread supplied")
+            raise RuntimeError("BFBridgeInstance being made belongs to a different thread than BFBridgeThread supplied")
 
         self.bfbridge_library = bfbridge_thread.bfbridge_library
         self.bfbridge_instance = ffi.new("bfbridge_instance_t*")
