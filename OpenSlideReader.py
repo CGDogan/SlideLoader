@@ -6,7 +6,7 @@ class OpenSlideReader(ImageReader.ImageReader):
         return "openslide"
 
     # Pick the reader
-    def __init__(imagepath):
+    def __init__(self, imagepath):
         self.reader = openslide.OpenSlide(imagepath)
     
     @property
