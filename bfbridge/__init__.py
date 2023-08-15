@@ -174,6 +174,10 @@ class BFBridgeInstance:
             raise ValueError("BFBridgeInstance must be initialized with BFBridgeThread")
 
         self.owner_thread = threading.get_ident()
+
+        # Note: Sometimes self.owner_thread equals bfbridge_thread.owner_thread
+        # but that's because the last thread exited and new thread was created
+        # so the identifier was recycled but not the thread so the JVM won't work
         if self.owner_thread != bfbridge_thread.owner_thread:
             raise RuntimeError("BFBridgeInstance being made belongs to a different thread than BFBridgeThread supplied")
 
