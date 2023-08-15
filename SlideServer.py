@@ -82,6 +82,7 @@ def getThumbnail(filename, size=50):
         slide = ImageReader.ImageReader(filepath)
         print("getThumbnail to be called")
         thumb = slide.get_thumbnail((size, size))
+        print("getThumbnail returned")
         buffer = BytesIO()
         thumb.save(buffer, format="PNG")
         print("Buffer len: ")
