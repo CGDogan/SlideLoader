@@ -404,6 +404,7 @@ bfbridge_error_t *bfbridge_make_instance(
     printf("c: makeinstance2%p %p\n", library->bfbridge_base, library->constructor);
     printf("%d, %d\n", *(int*)library->bfbridge_base,
     *(int*)library->constructor);
+        BFENVAV(jvm, DestroyJavaVM);
     printf("c: makeinstance2%p %p\n", library->bfbridge_base, library->constructor);
     library->constructor = BFENVA(env, GetMethodID, library->bfbridge_base, "<init>", "()V");
     jobject bfbridge_local =
