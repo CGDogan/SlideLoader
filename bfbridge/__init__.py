@@ -146,7 +146,7 @@ class BFBridgeThread:
             print("Please set BFBRIDGE_CLASSPATH to a single dir containing the jar files")
             sys.exit(1)
         cpdir_arg = ffi.new("char[]", cpdir.encode())
-        cachedir = os.environ.get("BFBRIDGE_CLASSPATH")
+        cachedir = os.environ.get("BFBRIDGE_CACHEDIR")
         cachedir_arg = ffi.NULL
         if cachedir is not None and cachedir != "":
             cachedir_arg = ffi.new("char[]", cachedir.encode())
