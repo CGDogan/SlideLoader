@@ -47,7 +47,8 @@ def ImageReader(imagepath):
         print("trying one")
         try:
             reader = r.open_image(imagepath)
-        except:
+        except e:
+            print(e, flush="True")
             continue
         if reader is None:
             continue
