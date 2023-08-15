@@ -189,7 +189,7 @@ class BFBridgeInstance:
         print("About to make instance in __init__.py", flush=True)
         potential_error = lib.bfbridge_make_instance(
             self.bfbridge_instance,
-            self.bfbridge_library,
+            ffi.NULL,
             self.communication_buffer,
             self.communication_buffer_len)
         print("Made instance in __init__.py", flush=True)
