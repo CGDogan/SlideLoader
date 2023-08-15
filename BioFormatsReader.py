@@ -18,16 +18,19 @@ class BioFormats(ImageReader):
             self.level_dimensions.append( \
                 (self.reader.get_size_x(), self.reader.get_size_y()))
 
-    
+    @property
     def level_count(self):
         return self.level_count
 
+    @property
     def dimensions(self):
         return self.dimensions
 
+    @property
     def level_dimensions(self):
         return self.level_dimensions
     
+    @property
     def associated_images(self):
         return None
 
