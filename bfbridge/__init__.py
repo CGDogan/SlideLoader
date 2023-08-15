@@ -3,6 +3,7 @@ from PIL import Image
 import numpy as np
 import os
 import sys
+import threading
 
 # channels = 3 or 4 supported currently
 # interleaved: Boolean
@@ -136,7 +137,6 @@ def make_pil_image( \
 class BFBridgeThread:
     def __init__(self):
         self.bfbridge_library = ffi.new("bfbridge_library_t*")
-
         cpdir = os.environ.get("BFBRIDGE_CLASSPATH")
         if cpdir is None or cpdir == "":
             print("Please set BFBRIDGE_CLASSPATH to a single dir containing the jar files")
@@ -153,6 +153,7 @@ class BFBridgeThread:
             print(ffi.string(potential_error[0].description))
             # free error here optionally
             sys.exit(1)
+        self.owner_thread = threading.get_ident()
 
     # Before Python 3.4: https://stackoverflow.com/a/8025922
     # Now we can define __del__
@@ -168,6 +169,10 @@ class BFBridgeInstance:
 
         if bfbridge_thread is None:
             raise ValueError("BFBridgeInstance must be initialized with BFBridgeThread")
+
+        self.owner_thread = threading.get_ident()
+        if self.owner_thread != bfbridge_thread.owner_thread:
+            raise AssertionError("BFBridgeInstance being made belongs to a different thread than BFBridgeThread supplied")
 
         self.bfbridge_library = bfbridge_thread.bfbridge_library
         self.bfbridge_instance = ffi.new("bfbridge_instance_t*")
