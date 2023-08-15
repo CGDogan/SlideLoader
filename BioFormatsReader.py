@@ -5,7 +5,7 @@ import bfbridge
 # with access trhough a mutex
 BioFormatsThreadGlobal = bfbridge.BFBridgeThread()
 
-class BioFormats(ImageReader.ImageReader):
+class BioFormatsReader(ImageReader.ImageReader):
     def reader_name(self):
         return "bioformats"
 

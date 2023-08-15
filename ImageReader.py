@@ -37,16 +37,21 @@ class ImageReader(ABC, metaclass=ABCMeta):
 import OpenSlideReader
 import BioFormatsReader
 
-# Return a reader
+readers = [OpenSlideReader.OpenSlideReader, BioFormatsReader.BioFormatsReader]
+
+# Replaces the constructor of the abstract class
+# Usage:
+# from ImageReader import ImageReader
+# image = ImageReader("/file/path")
+# Returns a reader
 # Returns None if no compatible reader was found
 def ImageReader(imagepath):
     # Decreasing order of importance
-    readers = [OpenSlideReader, BioFormatsReader]
     reader = None
     for r in readers:
         print("trying one")
         try:
-            reader = r.open_image(imagepath)
+            reader = r(imagepath)
         except Exception as e:
             print(e, flush="True")
             continue
