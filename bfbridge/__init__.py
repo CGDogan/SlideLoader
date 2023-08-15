@@ -150,6 +150,7 @@ class BFBridgeThread:
 
         potential_error = lib.bfbridge_make_library(self.bfbridge_library, ffi.NULL, cachedir_arg)
         if potential_error != ffi.NULL:
+            print("Testing relevant code")
             lib.bfbridge_free_error(potential_error)
             err = ffi.string(potential_error[0].description)
             print(err)
