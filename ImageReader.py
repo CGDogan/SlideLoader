@@ -52,8 +52,11 @@ def ImageReader(imagepath):
     for r in readers:
         print("trying one", flush=True)
         try:
+            print("trying one0:", flush="True")
             reader = r(imagepath)
+            print("trying one1:", flush="True")
         except Exception as e:
+            print("See exception:", flush="True")
             print(e, flush="True")
             continue
         if reader is None:
