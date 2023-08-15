@@ -371,6 +371,7 @@ bfbridge_error_t *bfbridge_make_instance(
     int communication_buffer_len)
 {
     fprintf(stderr, "hi\n\n");
+    setbuf(stdout, NULL);
     fflush(stderr);
     printf("c: makeinstance0\n");
     // Ease of freeing
