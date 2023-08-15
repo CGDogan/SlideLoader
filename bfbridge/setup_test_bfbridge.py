@@ -49,9 +49,6 @@ bfbridge_header = bfbridge_header.replace("BFBRIDGE_INLINE_ME_EXTRA", "").replac
 
 ffibuilder.cdef(bfbridge_header)
 
-# TODO DEBUG
-os.environ["JAVA_HOME"] = "/Library/Java/JavaVirtualMachines/graalvm-community-openjdk-20.0.1+9.1/Contents/Home"
-
 if "JAVA_HOME" not in os.environ:
     print("Please set JAVA_HOME to a JDK")
     sys.exit(1)
@@ -63,9 +60,6 @@ java_link = os.path.join(java_home, "lib/server")
 # jni-md.h should also be included hence the platform paths, see link in https://stackoverflow.com/a/37029528
 # https://github.com/openjdk/jdk/blob/6e3cc131daa9f3b883164333bdaad7aa3a6ca018/src/jdk.hotspot.agent/share/classes/sun/jvm/hotspot/utilities/PlatformInfo.java#L32
 java_include = [java_include, os.path.join(java_include, "linux"), os.path.join(java_include, "darwin"), os.path.join(java_include, "win32"), os.path.join(java_include, "bsd")]
-
-print("JAVA include:")
-print(java_include)
 
 extra_link_args = []
 
