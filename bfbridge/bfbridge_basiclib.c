@@ -402,6 +402,9 @@ bfbridge_error_t *bfbridge_make_instance(
     JNIEnv *env = library->env;
     printf("c: makeinstance2\n");
     printf("c: makeinstance2%p %p\n", library->bfbridge_base, library->constructor);
+    *library->bfbridge_base;
+    *library->constructor;
+    printf("c: makeinstance2%p %p\n", library->bfbridge_base, library->constructor);
     jobject bfbridge_local =
         BFENVA(env, NewObject, library->bfbridge_base, library->constructor);
     printf("c: makeinstance21\n");
