@@ -11,7 +11,11 @@ class BioFormatsReader(ImageReader.ImageReader):
 
     # Pick the reader
     def __init__(self, imagepath):
+        print("__init__ called", flush=True)
         self.reader = bfbridge.BFBridgeInstance(BioFormatsThreadGlobal)
+        print("__init__ called2", flush=True)
+        self.reader.open(imagepath)
+        print("__init__ called3", flush=True)
         self.level_count = self.reader.get_resolution_count()
         self.dimensions = (self.reader.get_size_x(), self.reader.get_size_y())
         self.level_dimensions = [self.dimensions]

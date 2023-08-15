@@ -78,11 +78,11 @@ def getThumbnail(filename, size=50):
     if not os.path.isfile(filepath):
         return {"error": "No such file"}
     try:
-        print("getThumbnail called", flush=True)
+        print("getThumbnail called, constructing", flush=True)
         slide = ImageReader.ImageReader(filepath)
-        print("getThumbnail to be called")
+        print("getThumbnail to be called", flush=True)
         thumb = slide.get_thumbnail((size, size))
-        print("getThumbnail returned")
+        print("slide.get_thumbnail returned", flush=True)
         buffer = BytesIO()
         thumb.save(buffer, format="PNG")
         print("Buffer len: ")
@@ -225,8 +225,8 @@ def singleSlide(filepath):
 
 @app.route("/data/thumbnail/<filepath>", methods=['GET'])
 def singleThumb(filepath):
-    print("Called gethumbnail", flush=True)
     size = flask.request.args.get('size', default=50, type=int)
+    print("Called gethumbnail", flush=True)
     res = getThumbnail(filepath, size)
     if (hasattr(res, 'error')):
         return flask.Response(json.dumps(res), status=500)
