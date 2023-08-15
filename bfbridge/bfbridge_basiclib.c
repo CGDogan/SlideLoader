@@ -502,10 +502,11 @@ char *bfbridge_instance_get_communication_buffer(
 // Instance class:
 #define BFINSTC (instance->bfbridge)
 
+// Goal: e.g. BFENVA(BFENV, library->BFGetErrorLength, BFINSTC, arg1, arg2, ...)
 // Call easily
 // #define BFFUNC(method_name, ...) BFENVA(BFENV, method_name, BFINSTC, __VA_ARGS__)
 // Even more easily:
-//      #define BFFUNC(caller, method, ...) \
+//      #define BFFUNC(caller, method, ...)
 //BFENVA(BFENV, caller, BFINSTC, library->method, __VA_ARGS__)
 // Super easily:
 #define BFFUNC(method, type, ...) \

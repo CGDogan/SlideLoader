@@ -65,7 +65,8 @@ extra_link_args = []
 
 if os.name != "nt":
     extra_link_args.append("-Wl,-rpath," + java_link) # libjvm.so
-    extra_link_args.append("-Wl,-install_name,@rpath/libjvm.dylib") # libjvm.so
+    if sys.platform == "darwin":
+        extra_link_args.append("-Wl,-install_name,@rpath/libjvm.dylib")
 
     # build fails without these when calling compiler manually
     # but somehow fails silently in this script.
@@ -73,7 +74,6 @@ if os.name != "nt":
     extra_link_args.append("-L" + java_link)
 
 
-# but compiling does call the compiler
-ffibuilder.set_source("_bfbridge", bfbridge_source, extra_link_args=extra_link_args, include_dirs=java_include, libraries=[])
+ffibuilder.set_source("_bfbridge", bfbridge_source, extra_link_args=extra_link_args, include_dirs=java_include, libraries=["jvm"])
 
 ffibuilder.compile(verbose=True)
