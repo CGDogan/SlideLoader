@@ -36,12 +36,12 @@ thread_to_object_dict_lock = threading.Lock()
 # saving an object.
 def check_out_thread_local_object():
     thread_id = threading.get_ident()
-    thread_to_object_dict.acquire()
+    thread_to_object_dict_lock.acquire()
     obj = thread_to_object_dict.get(thread_id)
     if obj is None:
         return None
     # release only if not None
-    thread_to_object_dict.release()
+    thread_to_object_dict_lock.release()
     return obj
 
 # if obj is None: don't create, or delete dictionary entry
@@ -51,10 +51,10 @@ def check_out_thread_local_object():
 def save_thread_local_object(obj):
     thread_id = threading.get_ident()
     if not thread_to_object_dict_lock.locked():
-        thread_to_object_dict.acquire()
+        thread_to_object_dict_lock.acquire()
     if obj is None:
         # delete if exists https://stackoverflow.com/q/15411107
-        thread_to_object_dict_lock.pop(thread_id, None)
+        thread_to_object_dict.pop(thread_id, None)
     else:
-        thread_to_object_dict_lock[thread_id] = obj
-    thread_to_object_dict.release()
+        thread_to_object_dict[thread_id] = obj
+    thread_to_object_dict_lock.release()
