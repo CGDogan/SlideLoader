@@ -370,9 +370,7 @@ bfbridge_error_t *bfbridge_make_instance(
     char *communication_buffer,
     int communication_buffer_len)
 {
-    fprintf(stderr, "hi\n\n");
     setbuf(stdout, NULL);
-    fflush(stderr);
     printf("c: makeinstance0\n");
     // Ease of freeing
     dest->bfbridge = NULL;
@@ -405,8 +403,11 @@ bfbridge_error_t *bfbridge_make_instance(
     printf("c: makeinstance2\n");
     jobject bfbridge_local =
         BFENVA(env, NewObject, library->bfbridge_base, library->constructor);
+    printf("c: makeinstance21\n");
+    
     // Should be freed: bfbridge
     jobject bfbridge = (jobject)BFENVA(env, NewGlobalRef, bfbridge_local);
+    printf("c: makeinstance23\n");
     BFENVA(env, DeleteLocalRef, bfbridge_local);
     printf("c: makeinstance25\n");
 
