@@ -3,8 +3,6 @@ from PIL import Image
 import numpy as np
 import os
 import sys
-#import weakref
-# global_weakkeydict = weakref.WeakKeyDictionary()
 
 # channels = 3 or 4 supported currently
 # interleaved: Boolean
@@ -135,8 +133,6 @@ def make_pil_image( \
     #https://pillow.readthedocs.io/en/latest/reference/Image.html#PIL.Image.fromarray
     return Image.fromarray(arr, mode="RGB")
 
-import inspect
-import os
 class BFBridgeThread:
     def __init__(self):
         self.bfbridge_library = ffi.new("bfbridge_library_t*")
@@ -146,13 +142,12 @@ class BFBridgeThread:
             print("Please set BFBRIDGE_CLASSPATH to a single dir containing the jar files")
             sys.exit(1)
         cpdir_arg = ffi.new("char[]", cpdir.encode())
+
         cachedir = os.environ.get("BFBRIDGE_CACHEDIR")
         cachedir_arg = ffi.NULL
         if cachedir is not None and cachedir != "":
             cachedir_arg = ffi.new("char[]", cachedir.encode())
-        print("MYINTERNALDEBUG making new thread")
-        print(os.getpid())
-        print(*['{:40}| {}:{}\n'.format(x.function, x.filename, x.lineno) for x in inspect.stack()])
+
         potential_error = lib.bfbridge_make_library(self.bfbridge_library, cpdir_arg, cachedir_arg)
         if potential_error != ffi.NULL:
             print(ffi.string(potential_error[0].description))
