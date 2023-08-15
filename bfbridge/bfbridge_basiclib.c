@@ -211,7 +211,7 @@ bfbridge_error_t *bfbridge_make_library(
 
     // Should be freed: path_arg, cache_arg, jvm
     int code = JNI_CreateJavaVM(&jvm, (void **)&env, &vm_args);
-    //free_string(cache_arg);
+    free_string(cache_arg);
 
     // Should be freed: path_arg, jvm
 
@@ -246,7 +246,7 @@ bfbridge_error_t *bfbridge_make_library(
         return err;
     }
 
-    free_string(path_arg);
+    //free_string(path_arg);
 
     dest->env = env;
     dest->bfbridge_base = bfbridge_base;
