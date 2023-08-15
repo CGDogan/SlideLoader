@@ -1,9 +1,11 @@
 import ImageReader
 import bfbridge
 
+# might need to be converted to a dict of threading.get_ident to BFBridgeThread
+# with access trhough a mutex
 BioFormatsThreadGlobal = bfbridge.BFBridgeThread()
 
-class BioFormats(ImageReader):
+class BioFormats(ImageReader.ImageReader):
     def reader_name(self):
         return "bioformats"
 
