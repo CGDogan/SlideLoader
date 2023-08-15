@@ -168,6 +168,8 @@ class BFBridgeThread:
 # An instance can be used with only the library object it was constructed with
 class BFBridgeInstance:
     def __init__(self, bfbridge_thread):
+        print("About __init__ in __init__.py", flush=True)
+
         if bfbridge_thread is None:
             raise ValueError("BFBridgeInstance must be initialized with BFBridgeThread")
 
@@ -175,13 +177,13 @@ class BFBridgeInstance:
         self.bfbridge_instance = ffi.new("bfbridge_instance_t*")
         self.communication_buffer = ffi.new("char[34000000]")
         self.communication_buffer_len = 34000000
-        print("About to make instance in __init__.py")
+        print("About to make instance in __init__.py", flush=True)
         potential_error = lib.bfbridge_make_instance(
             self.bfbridge_instance,
             self.bfbridge_library,
             self.communication_buffer,
             self.communication_buffer_len)
-        print("Made instance in __init__.py")
+        print("Made instance in __init__.py", flush=True)
         if potential_error != ffi.NULL:
             print(ffi.string(potential_error[0].description))
             sys.exit(1)
