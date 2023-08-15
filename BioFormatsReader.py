@@ -42,4 +42,5 @@ class BioFormatsReader(ImageReader.ImageReader):
             location[0], location[1], size[0], size[1])
 
     def get_thumbnail(self, max_size):
+        print("Starting BioFormatsReader get_thumbnail", flush=True)
         return self.reader.open_thumb_bytes_pil_image(0, max_size[0], max_size[1])
