@@ -86,6 +86,7 @@ def getThumbnail(filename, size=50):
         print("Buffer len: ")
         print(len(buffer))
         print(thumb)
+        print("", flush=True)
 
 
         data = 'data:image/png;base64,' + str(base64.b64encode(buffer.getvalue()))[2:-1]
