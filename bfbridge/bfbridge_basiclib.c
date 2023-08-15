@@ -246,7 +246,7 @@ bfbridge_error_t *bfbridge_make_library(
         return err;
     }
 
-    //free_string(path_arg);
+    free_string(path_arg);
 
     dest->env = env;
     dest->bfbridge_base = bfbridge_base;
@@ -376,7 +376,7 @@ bfbridge_error_t *bfbridge_make_instance(
 #ifndef BFBRIDGE_KNOW_BUFFER_LEN
     dest->communication_buffer_len = communication_buffer_len;
 #endif
-
+    printf("c: makeinstance1\n");
     if (!library->jvm)
     {
         return make_error(
@@ -394,7 +394,7 @@ bfbridge_error_t *bfbridge_make_instance(
     }
 
     JNIEnv *env = library->env;
-
+    printf("c: makeinstance2\n");
     jobject bfbridge_local =
         BFENVA(env, NewObject, library->bfbridge_base, library->constructor);
     // Should be freed: bfbridge
@@ -438,6 +438,7 @@ bfbridge_error_t *bfbridge_make_instance(
                 NULL);
         }
     }
+    printf("c: makeinstance3\n");
 
     /*
     How we would do if we hadn't been caching methods beforehand: This way:
@@ -450,6 +451,7 @@ bfbridge_error_t *bfbridge_make_instance(
     */
     BFENVA(env, CallVoidMethod, bfbridge, library->BFSetCommunicationBuffer, buffer);
     BFENVA(env, DeleteLocalRef, buffer);
+    printf("c: makeinstance4\n");
 
     // Ease of freeing: keep null until we can return without error
     dest->bfbridge = bfbridge;
