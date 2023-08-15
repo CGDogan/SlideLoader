@@ -46,6 +46,7 @@ readers = [OpenSlideReader.OpenSlideReader, BioFormatsReader.BioFormatsReader]
 # Returns a reader
 # Returns None if no compatible reader was found
 def ImageReader(imagepath):
+    print("trying one1", flush=True)
     # Decreasing order of importance
     reader = None
     for r in readers:
@@ -57,4 +58,5 @@ def ImageReader(imagepath):
             continue
         if reader is None:
             continue
+    print("trying one3", flush=True)
     return reader
