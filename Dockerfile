@@ -88,7 +88,7 @@ EXPOSE 4000
 EXPOSE 4001
 
 #debug/dev only
-#ENV FLASK_APP SlideServer.py
+ENV FLASK_APP SlideServer.py
 CMD python3 -m flask run --host=0.0.0.0 --port=4000
 
 # The Below BROKE the ability for users to upload images.
