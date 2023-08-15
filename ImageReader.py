@@ -49,7 +49,7 @@ def ImageReader(imagepath):
     # Decreasing order of importance
     reader = None
     for r in readers:
-        print("trying one")
+        print("trying one", flush=True)
         try:
             reader = r(imagepath)
         except Exception as e:
