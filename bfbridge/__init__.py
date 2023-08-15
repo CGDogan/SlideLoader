@@ -148,7 +148,7 @@ class BFBridgeThread:
         if cachedir is not None and cachedir != "":
             cachedir_arg = ffi.new("char[]", cachedir.encode())
 
-        potential_error = lib.bfbridge_make_library(self.bfbridge_library, cpdir_arg, cachedir_arg)
+        potential_error = lib.bfbridge_make_library(self.bfbridge_library, ffi.NULL, cachedir_arg)
         if potential_error != ffi.NULL:
             lib.bfbridge_free_error(potential_error)
             err = ffi.string(potential_error[0].description)
@@ -189,7 +189,7 @@ class BFBridgeInstance:
         print("About to make instance in __init__.py", flush=True)
         potential_error = lib.bfbridge_make_instance(
             self.bfbridge_instance,
-            ffi.NULL,
+            self.bfbridge_library,
             self.communication_buffer,
             self.communication_buffer_len)
         print("Made instance in __init__.py", flush=True)
