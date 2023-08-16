@@ -369,19 +369,16 @@ class BFBridgeInstance:
         print("open_thumb_bytes")
         #print(*['{:40}| {}:{}\n'.format(x.function, x.filename, x.lineno) for x in inspect.stack()])
         print("MYLIBDEBUG open_thumb_bytes_pil_image " + str(max_w) + " " + str(max_h))
-        print("So far", flush=True)
         img_h = self.get_size_y()
         img_w = self.get_size_x()
-        y_over_x = h / w;
+        y_over_x = img_h / img_w;
         x_over_y = 1 / y_over_x;
         w = min(max_w, round(max_h * x_over_y));
         h = min(max_h, round(max_w * y_over_x));
         if h > img_h or w > img_w:
             h = img_h
             w = img_w
-        print("So far2", flush=True)
         byte_arr = self.open_thumb_bytes(plane, w, h)
-        print("So far3", flush=True)
         print("open_thumb_bytes_pil_image byte array ")
         print(byte_arr)
         print(len(byte_arr))
