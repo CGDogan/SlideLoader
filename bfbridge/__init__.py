@@ -156,6 +156,12 @@ class BFBridgeThread:
             raise RuntimeError(err)
         self.owner_thread = threading.get_ident()
 
+    def __copy__(self):
+        raise RuntimeError("BFBridgeThread cannot be copied as JVMs cannot be cloned")
+
+    def __deepcopy__(self):
+        raise RuntimeError("BFBridgeThread cannot be copied as JVMs cannot be cloned")
+
     # Before Python 3.4: https://stackoverflow.com/a/8025922
     # Now we can define __del__
     def __del__(self):
@@ -198,6 +204,12 @@ class BFBridgeInstance:
             lib.bfbridge_free_error(potential_error)
             print(err, flush=True)
             raise RuntimeError(err)
+
+    def __copy__(self):
+        raise RuntimeError("Copying a BFBridgeInstance might not work")
+
+    def __deepcopy__(self):
+        raise RuntimeError("Copying a BFBridgeInstance might not work")
 
     def __del__(self):
         print("destroying BFBridgeInstance")
@@ -357,10 +369,15 @@ class BFBridgeInstance:
         print("open_thumb_bytes")
         #print(*['{:40}| {}:{}\n'.format(x.function, x.filename, x.lineno) for x in inspect.stack()])
         print("MYLIBDEBUG open_thumb_bytes_pil_image " + str(max_w) + " " + str(max_h))
-        y_over_x = self.get_size_y() / self.get_size_x();
-        x_over_y = 1/y_over_x;
+        img_h = self.get_size_y()
+        img_w = self.get_size_x()
+        y_over_x = h / w;
+        x_over_y = 1 / y_over_x;
         w = min(max_w, round(max_h * x_over_y));
         h = min(max_h, round(max_w * y_over_x));
+        if h > img_h or w > img_w:
+            h = img_h
+            w = img_w
         byte_arr = self.open_thumb_bytes(plane, w, h)
         print("open_thumb_bytes_pil_image byte array ")
         print(byte_arr)

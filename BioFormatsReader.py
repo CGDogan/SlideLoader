@@ -13,13 +13,9 @@ class BioFormatsReader(ImageReader.ImageReader):
         #print(threading.get_ident(), flush=True)
         bfthread = get_thread_local_object()
         if bfthread is None:
-            try:
-                bfthread = bfbridge.BFBridgeThread()
-            except Exception as f:
-                failure = f
+            # the following throws:
+            bfthread = bfbridge.BFBridgeThread()
             save_thread_local_object(bfthread)
-        if bfthread is None:
-            raise failure
         # Conventionally internal attributes start with underscore.
         # When using them without underscore, there's the risk that
         # a property has the same name as a/the getter, which breaks
