@@ -124,7 +124,7 @@ static bfbridge_error_t *make_error(
     return error;
 }
 
-// JVM restriction: Allows only one JVM alive per thread
+// JVM restriction: Allows only one JVM alive per process
 bfbridge_error_t *bfbridge_make_library(
     bfbridge_library_t *dest, char *cpdir, char *cachedir)
 {
@@ -223,6 +223,13 @@ bfbridge_error_t *bfbridge_make_library(
             // Only supports 1 digit now.
             code_string[0] = 0;
         }
+
+        // Handle "Other error"
+        if (BFENVAV(env, ExceptionCheck) == 1)
+        {
+            BFENVAV(env, ExceptionDescribe);
+        }
+
         return make_error((bfbridge_error_code_t)code, "JNI_CreateJavaVM failed, please see https://docs.oracle.com/en/java/javase/20/docs/specs/jni/functions.html#return-codes for error code description: -", code_string);
     }
 
