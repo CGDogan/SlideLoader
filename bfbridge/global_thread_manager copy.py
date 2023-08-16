@@ -25,6 +25,12 @@
 
 import threading
 
+# What we need is keeping thread-local variables in a way that
+# new threads that might even fork from it (https://stackoverflow.com/a/60807086)
+# should not have access to it.
+# Additionally, we need to keep data in a thread-local variable,
+# which we don't here, so the user must free them or we'll have a memory leakage.
+
 thread_to_object_dict = {}
 thread_to_object_dict_lock = threading.Lock()
 
