@@ -224,14 +224,14 @@ bfbridge_error_t *bfbridge_make_library(
             code_string[0] = 0;
         }
 
-        printf("printing:::\n");
+        /*printf("printing:::\n");
         // Handle "Other error"
         if (BFENVAV(env, ExceptionCheck) == 1)
         {
         printf("printing::::\n");
             BFENVAV(env, ExceptionDescribe);
         }
-        printf("printing:\n");
+        printf("printing:\n");*/
 
         return make_error((bfbridge_error_code_t)code, "JNI_CreateJavaVM failed, please see https://docs.oracle.com/en/java/javase/20/docs/specs/jni/functions.html#return-codes for error code description: -", code_string);
     }
