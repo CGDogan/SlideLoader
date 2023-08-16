@@ -51,6 +51,7 @@ def ImageReader(imagepath):
         print(thread.name)
 
     print("these are the threads", flush=True)
+    print(threading.get_native_id())
     print(threading.get_ident())
     print("my thread^", flush=True)
     # Decreasing order of importance
