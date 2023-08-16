@@ -364,8 +364,8 @@ void bfbridge_free_library(bfbridge_library_t *lib)
     // Ease of freeing
     if (lib->jvm)
     {
-        BFENVAV(lib->jvm, DestroyJavaVM);
-        __builtin_printf("DestroyedJVM\n\n");
+        int code = BFENVAV(lib->jvm, DestroyJavaVM);
+        __builtin_printf("DestroyedJVM %d\n\n", code);
         // Ease of freeing: make the attempt to free an instance
         // after the library a no-op
         lib->jvm = NULL;
