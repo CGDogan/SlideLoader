@@ -9,7 +9,7 @@ class BioFormatsReader(ImageReader.ImageReader):
     # Pick the reader
     def __init__(self, imagepath):
         print("__init__ called", flush=True)
-        print("TrID instance:")
+        print("TrID instance:", flush=True)
         #print(threading.get_ident(), flush=True)
         bfthread = get_thread_local_object()
         if bfthread is None:
