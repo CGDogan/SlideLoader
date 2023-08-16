@@ -210,8 +210,8 @@ bfbridge_error_t *bfbridge_make_library(
     {
     JavaVM* vmbuf[3];
     jsize x = 0;
-    int code = JNI_GetCreatedJavaVMs(vmbuf, 3, &jsize);
-    printf("check code: %d %d\n", code, jsize);
+    int code = JNI_GetCreatedJavaVMs(vmbuf, 3, &x);
+    printf("check code: %d %d\n", code, x);
     }
 
     JavaVM *jvm;
