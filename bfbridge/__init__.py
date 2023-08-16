@@ -93,7 +93,7 @@ def make_pil_image( \
 
     # for signed int types, make them unsigned:
     if bioformats_pixel_type < 6 and ((bioformats_pixel_type & 1) == 0):
-        # 128 for int8 etc.
+        # 128 for int8 etc.
         offset = -np.iinfo(arr.dtype).min
         arr = arr + offset
         if bioformats_pixel_type == 0:
@@ -107,14 +107,14 @@ def make_pil_image( \
     # now handle types 1, 3, 5, 6
 
     # PIL supports only 8 bit
-    # 32 bit -> 8 bit:
+    # 32 bit -> 8 bit:
     if bioformats_pixel_type == 5:
         arr = np.float64(arr) / 65536 / 256
         arr = np.rint(arr)
         arr = np.uint8(arr)
         bioformats_pixel_type = 1
         bytes_per_pixel_per_channel = 1
-    # 16 bit -> 8 bit:
+    # 16 bit -> 8 bit:
     if bioformats_pixel_type == 3:
         arr = np.float32(arr) / 256
         arr = np.rint(arr)
@@ -183,8 +183,8 @@ class BFBridgeInstance:
         self.owner_thread = threading.get_ident()
 
         # Note: Sometimes self.owner_thread equals bfbridge_thread.owner_thread
-        # but that's because the last thread exited and new thread was created
-        # so the identifier was recycled but not the thread so the JVM won't work
+        # but that's because the last thread exited and new thread was created
+        # so the identifier was recycled but not the thread so the JVM won't work
         if self.owner_thread != bfbridge_thread.owner_thread:
             raise RuntimeError("BFBridgeInstance being made belongs to a different thread than BFBridgeThread supplied")
 
@@ -369,6 +369,7 @@ class BFBridgeInstance:
         print("open_thumb_bytes")
         #print(*['{:40}| {}:{}\n'.format(x.function, x.filename, x.lineno) for x in inspect.stack()])
         print("MYLIBDEBUG open_thumb_bytes_pil_image " + str(max_w) + " " + str(max_h))
+        print("So far", flush=True)
         img_h = self.get_size_y()
         img_w = self.get_size_x()
         y_over_x = h / w;
@@ -378,7 +379,9 @@ class BFBridgeInstance:
         if h > img_h or w > img_w:
             h = img_h
             w = img_w
+        print("So far2", flush=True)
         byte_arr = self.open_thumb_bytes(plane, w, h)
+        print("So far3", flush=True)
         print("open_thumb_bytes_pil_image byte array ")
         print(byte_arr)
         print(len(byte_arr))
