@@ -46,7 +46,11 @@ readers = [OpenSlideReader.OpenSlideReader, BioFormatsReader.BioFormatsReader]
 # Returns a reader
 # Returns None if no compatible reader was found
 def ImageReader(imagepath):
-    print("trying one1", flush=True)
+    import threading
+    for thread in threading.enumerate(): 
+        print(thread.name)
+
+    print("these are the threads", flush=True)
     # Decreasing order of importance
     reader = None
     for r in readers:

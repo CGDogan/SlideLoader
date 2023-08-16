@@ -134,12 +134,13 @@ def make_pil_image( \
     #https://pillow.readthedocs.io/en/latest/reference/Image.html#PIL.Image.fromarray
     return Image.fromarray(arr, mode="RGB")
 
+# Note: this refers to a Python thread. Puthon actually uses fork() which creates new fork() processes
 class BFBridgeThread:
     def __init__(self):
         self.bfbridge_library = ffi.new("bfbridge_library_t*")
         cpdir = os.environ.get("BFBRIDGE_CLASSPATH")
         if cpdir is None or cpdir == "":
-            print("Please set BFBRIDGE_CLASSPATH to a single dir containing the jar files")
+            print("Please set BFBRIDGE_CLASSPATH env var to a single dir containing the jar files")
             sys.exit(1)
         cpdir_arg = ffi.new("char[]", cpdir.encode())
 
