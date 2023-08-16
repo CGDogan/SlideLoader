@@ -36,6 +36,8 @@ RUN meson compile -C build
 RUN meson test -C build
 RUN meson install -C build
 
+WORKDIR /root/src
+
 RUN pip install pyvips --break-system-packages
 RUN pip install flask --break-system-packages
 RUN pip install gunicorn --break-system-packages
