@@ -206,6 +206,14 @@ bfbridge_error_t *bfbridge_make_library(
         options[vm_args.nOptions++].optionString = cache_arg->str;
     }
 
+    // Check if JVM already exists
+    {
+    JavaVM* vmbuf[3];
+    jsize x = 0;
+    int code = JNI_GetCreatedJavaVMs(vmbuf, 3, &jsize);
+    printf("check code: %d %d\n", code, jsize);
+    }
+
     JavaVM *jvm;
     JNIEnv *env;
 
