@@ -355,7 +355,7 @@ class BFBridgeInstance:
     
     def open_thumb_bytes_pil_image(self, plane, max_w, max_h):
         print("open_thumb_bytes")
-        print(*['{:40}| {}:{}\n'.format(x.function, x.filename, x.lineno) for x in inspect.stack()])
+        #print(*['{:40}| {}:{}\n'.format(x.function, x.filename, x.lineno) for x in inspect.stack()])
         print("MYLIBDEBUG open_thumb_bytes_pil_image " + str(max_w) + " " + str(max_h))
         y_over_x = self.get_size_y() / self.get_size_x();
         x_over_y = 1/y_over_x;
