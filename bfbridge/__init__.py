@@ -155,7 +155,7 @@ class BFBridgeThread:
             lib.bfbridge_free_error(potential_error)
             print(err, flush=True)
             raise RuntimeError(err)
-        self.owner_thread = threading.get_ident()
+        self.owner_thread = os.getpid()
 
     def __copy__(self):
         raise RuntimeError("BFBridgeThread cannot be copied as JVMs cannot be cloned")
@@ -181,7 +181,7 @@ class BFBridgeInstance:
         if bfbridge_thread is None:
             raise ValueError("BFBridgeInstance must be initialized with BFBridgeThread")
 
-        self.owner_thread = threading.get_ident()
+        self.owner_thread = os.getpid() #threading.get_ident()
 
         # Note: Sometimes self.owner_thread equals bfbridge_thread.owner_thread
         # but that's because the last thread exited and new thread was created
