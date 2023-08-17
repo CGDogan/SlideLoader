@@ -23,13 +23,13 @@ class BioFormatsReader(ImageReader.ImageReader):
         thread_id = os.getpid() #get_ident()
         bfthread = check_out_thread_local_object(thread_id)
         if bfthread is None:
-            print("LOCK: none, now construct")
+            print("LOCK: none, now construct", flush=True)
             try:
                 bfthread = bfbridge.BFBridgeThread(jvm)
-                print("LOCK: constructed")
+                print("LOCK: constructed", flush=True)
             except Exception as f:
                 failure = f
-                print("LOCK: fail")
+                print("LOCK: fail", flush=True)
                 print(f)
             save_thread_local_object(thread_id, bfthread)
             print("LOCK: release")
