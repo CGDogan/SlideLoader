@@ -130,7 +130,6 @@ bfbridge_error_t *bfbridge_make_library(
 {
     // Ease of freeing
     dest->jvm = NULL;
-    dest->env = NULL;
 
     if (cpdir == NULL || cpdir[0] == '\0')
     {
@@ -273,6 +272,7 @@ bfbridge_error_t *bfbridge_make_library(
 
     free_string(path_arg);
 
+    dest->env = env;
     dest->bfbridge_base = bfbridge_base;
 
     dest->constructor = BFENVA(env, GetMethodID, bfbridge_base, "<init>", "()V");
@@ -355,17 +355,8 @@ bfbridge_error_t *bfbridge_make_library(
 
     // Ease of freeing: keep null until we can return without error
     dest->jvm = jvm;
-    dest->env = env;
 
     return NULL;
-}
-
-void bfbridge_attach_thread_to_library(bfbridge_library_t *lib) {
-
-}
-
-void bfbridge_detach_thread_from_library() {
-    
 }
 
 void bfbridge_move_library(bfbridge_library_t *dest, bfbridge_library_t *lib)
@@ -392,7 +383,6 @@ void bfbridge_free_library(bfbridge_library_t *lib)
         // Ease of freeing: make the attempt to free an instance
         // after the library a no-op
         lib->jvm = NULL;
-        lib->env = NULL;
     }
     // Now, after DestroyJavaVM, there's no need to free bfbridge_base
     // DetachCurrentThread would also free this reference
