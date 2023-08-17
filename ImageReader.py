@@ -1,3 +1,7 @@
+# Please note: if you would like to import a specific reader,
+# you should "import ImageReader" first, even if you won't use it,
+# to avoid a cyclic dependency error
+
 from abc import ABCMeta, abstractmethod
 
 # Allow near drop-in replacements for OpenSlide-Python
