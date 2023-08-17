@@ -219,6 +219,12 @@ bfbridge_error_t *bfbridge_make_library(
 
     // Should be freed: path_arg, cache_arg, jvm
     int code = JNI_CreateJavaVM(&jvm, (void **)&env, &vm_args);
+    printf("%d create jvm code\n", code);
+    code = BFENVAV(jvm, DestroyJavaVM);
+    printf("%d destroy jvm code\n", code);
+
+    code = JNI_CreateJavaVM(&jvm, (void **)&env, &vm_args);
+
     free_string(cache_arg);
 
     // Should be freed: path_arg, jvm
