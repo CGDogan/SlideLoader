@@ -301,17 +301,34 @@ void bfbridge_free_vm(bfbridge_vm_t *dest)
 bfbridge_error_t *bfbridge_make_thread(
     bfbridge_thread_t *dest, bfbridge_vm_t *vm)
 {
+        fprintf(stderr, "bfbridge_make_thread00\n");
     // Ease of freeing
+    dest->env = NULL;
+    fprintf(stderr, "bfbridge_make_thread01\n");
+
+    if (!vm->jvm) {
+        fprintf(stderr, "bfbridge_make_thread02\n");
+
+        return make_error(BFBRIDGE_LIBRARY_UNINITIALIZED, "bfbridge_make_thread requires successful bfbridge_make_vm", NULL);
+    }
+        fprintf(stderr, "bfbridge_make_thread03\n");
+
+    dest->vm = vm;
+    fprintf(stderr, "bfbridge_make_thread1\n");
+    JNIEnv *env;
+    jint code = BFENVA(vm->jvm, AttachCurrentThread, (void **)&env, NULL);
+    fprintf(stderr, "bfbridge_make_thread2\n");
+/*    // Ease of freeing
     dest->env = NULL;
 
     if (!vm->jvm) {
         return make_error(BFBRIDGE_LIBRARY_UNINITIALIZED, "bfbridge_make_thread requires successful bfbridge_make_vm", NULL);
     }
 
-    *dest->vm = *vm;
+    dest->vm = vm;
 
     JNIEnv *env;
-    jint code = BFENVA(vm->jvm, AttachCurrentThread, (void **)&env, NULL);
+    jint code = BFENVA(vm->jvm, AttachCurrentThread, (void **)&env, NULL);*/
     if (code < 0) {
         char code_string[2] = {(char)('0' + (-code)), 0};
         if (code > 9) {
