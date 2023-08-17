@@ -511,6 +511,8 @@ bfbridge_error_t *bfbridge_make_instance(
     //thread->constructor = BFENVA(env, GetMethodID, thread->bfbridge_base, "<init>", "()V");
 
     JNIEnv *env2;
+    printf("env pointer for this thread oming\n");
+
     BFENVA(thread->vm->jvm, GetEnv, (void**)env2, 20);
     printf("env pointer for this thread %p\n", env2);
 
