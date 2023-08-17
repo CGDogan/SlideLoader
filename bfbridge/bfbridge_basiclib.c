@@ -307,7 +307,7 @@ bfbridge_error_t *bfbridge_make_thread(
         return make_error(BFBRIDGE_LIBRARY_UNINITIALIZED, "bfbridge_make_thread requires successful bfbridge_make_vm", NULL);
     }
 
-    dest->vm = *vm;
+    *dest->vm = *vm;
 
     JNIEnv *env;
     jint code = BFENVA(vm->jvm, AttachCurrentThread, (void **)&env, NULL);
