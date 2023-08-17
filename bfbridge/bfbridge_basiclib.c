@@ -509,6 +509,11 @@ bfbridge_error_t *bfbridge_make_instance(
      //   BFENVAV(thread->jvm, DestroyJavaVM);
     printf("c: makeinstance2%p %p\n", thread->bfbridge_base, thread->constructor);
     //thread->constructor = BFENVA(env, GetMethodID, thread->bfbridge_base, "<init>", "()V");
+
+    JNIEnv *env2;
+    BFENVA(thread->vm->jvm, GetEnv, env2, 20)
+    printf("env pointer for this thread %p\n", env2);
+
     jobject bfbridge_local =
         BFENVA(env, NewObject, thread->bfbridge_base, thread->constructor);
     printf("c: makeinstance21\n");
