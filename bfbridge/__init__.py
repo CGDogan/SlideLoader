@@ -137,7 +137,7 @@ def make_pil_image( \
 # Note: this refers to a Python thread. Puthon actually uses fork() which creates new fork() processes
 class BFBridgeThread:
     def __init__(self):
-        self.bfbridge_library = ffi.new("bfbridge_library_t*")
+        self.bfbridge_thread = ffi.new("bfbridge_thread_t*")
         cpdir = os.environ.get("BFBRIDGE_CLASSPATH")
         if cpdir is None or cpdir == "":
             print("Please set BFBRIDGE_CLASSPATH env var to a single dir containing the jar files")
@@ -149,7 +149,7 @@ class BFBridgeThread:
         if cachedir is not None and cachedir != "":
             cachedir_arg = ffi.new("char[]", cachedir.encode())
 
-        potential_error = lib.bfbridge_make_library(self.bfbridge_library, cpdir_arg, cachedir_arg)
+        potential_error = lib.bfbridge_make_thread(self.bfbridge_thread, cpdir_arg, cachedir_arg)
         if potential_error != ffi.NULL:
             err = ffi.string(potential_error[0].description)
             lib.bfbridge_free_error(potential_error)
@@ -169,11 +169,11 @@ class BFBridgeThread:
         print("destroying BFBridgeThread")
         # C code takes care to not free if it wasn't initialized successfully
         # but we need to take care about the Python counterpart
-        if hasattr(self, "bfbridge_library"):
-            lib.bfbridge_free_library(self.bfbridge_library)
+        if hasattr(self, "bfbridge_thread"):
+            lib.bfbridge_free_thread(self.bfbridge_thread)
         print("destroyinged BFBridgeThread")
 
-# An instance can be used with only the library object it was constructed with
+# An instance can be used with only the thread object it was constructed with
 class BFBridgeInstance:
     def __init__(self, bfbridge_thread):
         print("About __init__ in __init__.py", flush=True)
@@ -189,14 +189,14 @@ class BFBridgeInstance:
         if self.owner_thread != bfbridge_thread.owner_thread:
             raise RuntimeError("BFBridgeInstance being made belongs to a different thread than BFBridgeThread supplied")
 
-        self.bfbridge_library = bfbridge_thread.bfbridge_library
+        self.bfbridge_thread = bfbridge_thread.bfbridge_thread
         self.bfbridge_instance = ffi.new("bfbridge_instance_t*")
         self.communication_buffer = ffi.new("char[34000000]")
         self.communication_buffer_len = 34000000
         print("About to make instance in __init__.py", flush=True)
         potential_error = lib.bfbridge_make_instance(
             self.bfbridge_instance,
-            self.bfbridge_library,
+            self.bfbridge_thread,
             self.communication_buffer,
             self.communication_buffer_len)
         print("Made instance in __init__.py", flush=True)
@@ -215,7 +215,7 @@ class BFBridgeInstance:
     def __del__(self):
         print("destroying BFBridgeInstance")
         if hasattr(self, "bfbridge_instance"):
-            lib.bfbridge_free_instance(self.bfbridge_instance, self.bfbridge_library)
+            lib.bfbridge_free_instance(self.bfbridge_instance, self.bfbridge_thread)
         print("destroyinged BFBridgeInstance")
 
     def __return_from_buffer(self, length, isString):
@@ -241,118 +241,118 @@ class BFBridgeInstance:
 
     # Should be called only after the last method call returned an error code
     def get_error_string(self):
-        length = lib.bf_get_error_length(self.bfbridge_instance, self.bfbridge_library)
+        length = lib.bf_get_error_length(self.bfbridge_instance, self.bfbridge_thread)
         return self.__return_from_buffer(length, True)
     
     def is_compatible(self, filepath):
         filepath = filepath.encode()
         file = ffi.new("char[]", filepath)
         filepathlen = len(file) - 1
-        res = lib.bf_is_compatible(self.bfbridge_instance, self.bfbridge_library, filepath, filepathlen)
+        res = lib.bf_is_compatible(self.bfbridge_instance, self.bfbridge_thread, filepath, filepathlen)
         return self.__boolean(res)
     
     def open(self, filepath):
         filepath = filepath.encode()
         file = ffi.new("char[]", filepath)
         filepathlen = len(file) - 1
-        res = lib.bf_open(self.bfbridge_instance, self.bfbridge_library, filepath, filepathlen)
+        res = lib.bf_open(self.bfbridge_instance, self.bfbridge_thread, filepath, filepathlen)
         print(self.get_error_string(), flush=True)
         return res
     
     def get_format(self):
-        length = lib.bf_get_format(self.bfbridge_instance, self.bfbridge_library)
+        length = lib.bf_get_format(self.bfbridge_instance, self.bfbridge_thread)
         return self.__return_from_buffer(length, True)
 
     def close(self):
-        return lib.bf_close(self.bfbridge_instance, self.bfbridge_library)
+        return lib.bf_close(self.bfbridge_instance, self.bfbridge_thread)
 
     def get_series_count(self):
-        return lib.bf_get_series_count(self.bfbridge_instance, self.bfbridge_library)
+        return lib.bf_get_series_count(self.bfbridge_instance, self.bfbridge_thread)
 
     def set_current_series(self, ser):
-        return lib.bf_set_current_series(self.bfbridge_instance, self.bfbridge_library, ser)
+        return lib.bf_set_current_series(self.bfbridge_instance, self.bfbridge_thread, ser)
     
     def get_resolution_count(self):
-        return lib.bf_get_resolution_count(self.bfbridge_instance, self.bfbridge_library)
+        return lib.bf_get_resolution_count(self.bfbridge_instance, self.bfbridge_thread)
 
     def set_current_resolution(self, res):
-        return lib.bf_set_current_resolution(self.bfbridge_instance, self.bfbridge_library, res)
+        return lib.bf_set_current_resolution(self.bfbridge_instance, self.bfbridge_thread, res)
     
     def get_size_x(self):
-        return lib.bf_get_size_x(self.bfbridge_instance, self.bfbridge_library)
+        return lib.bf_get_size_x(self.bfbridge_instance, self.bfbridge_thread)
 
     def get_size_y(self):
-        return lib.bf_get_size_y(self.bfbridge_instance, self.bfbridge_library)
+        return lib.bf_get_size_y(self.bfbridge_instance, self.bfbridge_thread)
 
     def get_size_z(self):
-        return lib.bf_get_size_z(self.bfbridge_instance, self.bfbridge_library)
+        return lib.bf_get_size_z(self.bfbridge_instance, self.bfbridge_thread)
 
     def get_size_c(self):
-        return lib.bf_get_size_c(self.bfbridge_instance, self.bfbridge_library)
+        return lib.bf_get_size_c(self.bfbridge_instance, self.bfbridge_thread)
 
     def get_size_t(self):
-        return lib.bf_get_size_t(self.bfbridge_instance, self.bfbridge_library)
+        return lib.bf_get_size_t(self.bfbridge_instance, self.bfbridge_thread)
 
     def get_effective_size_c(self):
-        return lib.bf_get_effective_size_c(self.bfbridge_instance, self.bfbridge_library)
+        return lib.bf_get_effective_size_c(self.bfbridge_instance, self.bfbridge_thread)
 
     def get_image_count(self):
-        return lib.bf_get_image_count(self.bfbridge_instance, self.bfbridge_library)
+        return lib.bf_get_image_count(self.bfbridge_instance, self.bfbridge_thread)
 
     def get_dimension_order(self):
-        length = lib.bf_get_dimension_order(self.bfbridge_instance, self.bfbridge_library)
+        length = lib.bf_get_dimension_order(self.bfbridge_instance, self.bfbridge_thread)
         return self.__return_from_buffer(length, True)
 
     def is_order_certain(self):
-        return self.__boolean(lib.bf_is_order_certain(self.bfbridge_instance, self.bfbridge_library))
+        return self.__boolean(lib.bf_is_order_certain(self.bfbridge_instance, self.bfbridge_thread))
 
     def get_optimal_tile_width(self):
-        return lib.bf_get_optimal_tile_width(self.bfbridge_instance, self.bfbridge_library)
+        return lib.bf_get_optimal_tile_width(self.bfbridge_instance, self.bfbridge_thread)
     
     def get_optimal_tile_height(self):
-        return lib.bf_get_optimal_tile_height(self.bfbridge_instance, self.bfbridge_library)
+        return lib.bf_get_optimal_tile_height(self.bfbridge_instance, self.bfbridge_thread)
     
     def get_pixel_type(self):
-        return lib.bf_get_optimal_tile_height(self.bfbridge_instance, self.bfbridge_library)
+        return lib.bf_get_optimal_tile_height(self.bfbridge_instance, self.bfbridge_thread)
     
     def get_pixel_type(self):
-        return lib.bf_get_pixel_type(self.bfbridge_instance, self.bfbridge_library)
+        return lib.bf_get_pixel_type(self.bfbridge_instance, self.bfbridge_thread)
     
     def get_bits_per_pixel(self):
-        return lib.bf_get_bits_per_pixel(self.bfbridge_instance, self.bfbridge_library)
+        return lib.bf_get_bits_per_pixel(self.bfbridge_instance, self.bfbridge_thread)
 
     def get_bytes_per_pixel(self):
-        return lib.bf_get_bytes_per_pixel(self.bfbridge_instance, self.bfbridge_library)
+        return lib.bf_get_bytes_per_pixel(self.bfbridge_instance, self.bfbridge_thread)
 
     def get_rgb_channel_count(self):
-        return lib.bf_get_rgb_channel_count(self.bfbridge_instance, self.bfbridge_library)
+        return lib.bf_get_rgb_channel_count(self.bfbridge_instance, self.bfbridge_thread)
 
     def is_rgb(self):
-        return self.__boolean(lib.bf_is_rgb(self.bfbridge_instance, self.bfbridge_library))
+        return self.__boolean(lib.bf_is_rgb(self.bfbridge_instance, self.bfbridge_thread))
 
     def is_interleaved(self):
-        return self.__boolean(lib.bf_is_interleaved(self.bfbridge_instance, self.bfbridge_library))
+        return self.__boolean(lib.bf_is_interleaved(self.bfbridge_instance, self.bfbridge_thread))
     
     def is_little_endian(self):
-        return self.__boolean(lib.bf_is_little_endian(self.bfbridge_instance, self.bfbridge_library))
+        return self.__boolean(lib.bf_is_little_endian(self.bfbridge_instance, self.bfbridge_thread))
 
     def is_indexed_color(self):
-        return self.__boolean(lib.bf_is_indexed_color(self.bfbridge_instance, self.bfbridge_library))
+        return self.__boolean(lib.bf_is_indexed_color(self.bfbridge_instance, self.bfbridge_thread))
     
     def is_false_color(self):
-        return self.__boolean(lib.bf_is_false_color(self.bfbridge_instance, self.bfbridge_library))
+        return self.__boolean(lib.bf_is_false_color(self.bfbridge_instance, self.bfbridge_thread))
     
     # TODO return a 2D array
     def get_8_bit_lookup_table(self):
-        return self.__return_from_buffer(lib.bf_get_8_bit_lookup_table(self.bfbridge_instance, self.bfbridge_library), False)
+        return self.__return_from_buffer(lib.bf_get_8_bit_lookup_table(self.bfbridge_instance, self.bfbridge_thread), False)
     
     # TODO return a 2D array
     def get_16_bit_lookup_table(self):
-        return self.__return_from_buffer(lib.bf_get_8_bit_lookup_table(self.bfbridge_instance, self.bfbridge_library), False)
+        return self.__return_from_buffer(lib.bf_get_8_bit_lookup_table(self.bfbridge_instance, self.bfbridge_thread), False)
     
     # plane = 0 in general
     def open_bytes(self, plane, x, y, w, h):
-        return self.__return_from_buffer(lib.bf_open_bytes(self.bfbridge_instance, self.bfbridge_library, plane, x, y, w, h), False)
+        return self.__return_from_buffer(lib.bf_open_bytes(self.bfbridge_instance, self.bfbridge_thread, plane, x, y, w, h), False)
 
     def open_bytes_pil_image(self, plane, x, y, w, h):
         byte_arr = self.open_bytes(plane, x, y, w, h)
@@ -364,7 +364,7 @@ class BFBridgeInstance:
     def open_thumb_bytes(self, plane, w, h):
         return self.__return_from_buffer( \
             lib.bf_open_thumb_bytes( \
-            self.bfbridge_instance, self.bfbridge_library, plane, w, h), False)
+            self.bfbridge_instance, self.bfbridge_thread, plane, w, h), False)
     
     def open_thumb_bytes_pil_image(self, plane, max_w, max_h):
         print("open_thumb_bytes")
@@ -397,13 +397,13 @@ class BFBridgeInstance:
             self.is_little_endian())
 
     def get_mpp_x(self, no):
-        return lib.bf_get_mpp_x(self.bfbridge_instance, self.bfbridge_library, no)
+        return lib.bf_get_mpp_x(self.bfbridge_instance, self.bfbridge_thread, no)
     
     def get_mpp_y(self, no):
-        return lib.bf_get_mpp_y(self.bfbridge_instance, self.bfbridge_library, no)
+        return lib.bf_get_mpp_y(self.bfbridge_instance, self.bfbridge_thread, no)
 
     def get_mpp_z(self, no):
-        return lib.bf_get_mpp_z(self.bfbridge_instance, self.bfbridge_library, no)
+        return lib.bf_get_mpp_z(self.bfbridge_instance, self.bfbridge_thread, no)
 
 # TODO Deleteme these
 #thre = BFBridgeThread()
