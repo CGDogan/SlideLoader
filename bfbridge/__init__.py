@@ -134,14 +134,14 @@ def make_pil_image( \
     #https://pillow.readthedocs.io/en/latest/reference/Image.html#PIL.Image.fromarray
     return Image.fromarray(arr, mode="RGB")
 
-# Note: this refers to a Python thread. Puthon actually uses fork() which creates new fork() processes
-class BFBridgeThread:
+# Can be created only once during a Python process lifetime and once it's destroyed
+# it cannot be recreated
+class BFBridgeVM:
     def __init__(self):
-        self.bfbridge_thread = ffi.new("bfbridge_thread_t*")
+        self.bfbridge_vm =  ffi.new("bfbridge_vm_t*")
         cpdir = os.environ.get("BFBRIDGE_CLASSPATH")
         if cpdir is None or cpdir == "":
-            print("Please set BFBRIDGE_CLASSPATH env var to a single dir containing the jar files")
-            sys.exit(1)
+            raise RuntimeError("Please set BFBRIDGE_CLASSPATH env var to a single dir containing the jar files")
         cpdir_arg = ffi.new("char[]", cpdir.encode())
 
         cachedir = os.environ.get("BFBRIDGE_CACHEDIR")
@@ -149,28 +149,41 @@ class BFBridgeThread:
         if cachedir is not None and cachedir != "":
             cachedir_arg = ffi.new("char[]", cachedir.encode())
 
-        potential_error = lib.bfbridge_make_thread(self.bfbridge_thread, cpdir_arg, cachedir_arg)
+        potential_error = lib.bfbridge_make_vm(self.bfbridge_vm, cpdir_arg, cachedir_arg)
         if potential_error != ffi.NULL:
             err = ffi.string(potential_error[0].description)
             lib.bfbridge_free_error(potential_error)
             print(err, flush=True)
             raise RuntimeError(err)
+
+# You can create as many copies as needed in a single thread
+class BFBridgeThread:
+    def __init__(self, bfbridge_vm):
+        self.bfbridge_thread = ffi.new("bfbridge_thread_t*")
+        potential_error = lib.bfbridge_make_thread(self.bfbridge_thread, bfbridge_vm.bfbridge_vm)
+        if potential_error != ffi.NULL:
+            err = ffi.string(potential_error[0].description)
+            lib.bfbridge_free_error(potential_error)
+            print(err, flush=True)
+            raise RuntimeError(err)
+        # TODO concurrency
         self.owner_thread = os.getpid()
 
     def __copy__(self):
-        raise RuntimeError("BFBridgeThread cannot be copied as JVMs cannot be cloned")
+        raise RuntimeError("BFBridgeThread cannot be copied")
 
     def __deepcopy__(self):
-        raise RuntimeError("BFBridgeThread cannot be copied as JVMs cannot be cloned")
+        raise RuntimeError("BFBridgeThread cannot be copied")
 
     # Before Python 3.4: https://stackoverflow.com/a/8025922
     # Now we can define __del__
     def __del__(self):
         print("destroying BFBridgeThread")
+        # TODO Concurrency: fix memory leak
         # C code takes care to not free if it wasn't initialized successfully
         # but we need to take care about the Python counterpart
-        if hasattr(self, "bfbridge_thread"):
-            lib.bfbridge_free_thread(self.bfbridge_thread)
+        #if hasattr(self, "bfbridge_thread"):
+        #    lib.bfbridge_free_thread(self.bfbridge_thread)
         print("destroyinged BFBridgeThread")
 
 # An instance can be used with only the thread object it was constructed with

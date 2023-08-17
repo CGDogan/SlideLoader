@@ -2,7 +2,7 @@ import ImageReader
 import bfbridge
 from bfbridge.old_global_thread_manager import check_out_thread_local_object, save_thread_local_object, thread_to_object_dict_lock
 
-main_thread = bfbridge.BFBridgeThread()
+jvm = bfbridge.BFBridgeVM()
 
 class BioFormatsReader(ImageReader.ImageReader):
     def reader_name(self):
@@ -25,7 +25,7 @@ class BioFormatsReader(ImageReader.ImageReader):
         if bfthread is None:
             print("LOCK: none, now construct")
             try:
-                bfthread = bfbridge.BFBridgeThread()
+                bfthread = bfbridge.BFBridgeThread(jvm)
                 print("LOCK: constructed")
             except Exception as f:
                 failure = f
