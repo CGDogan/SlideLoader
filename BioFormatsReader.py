@@ -1,6 +1,6 @@
 import ImageReader
 import bfbridge
-from bfbridge.global_thread_manager import get_thread_local_object, save_thread_local_object
+from bfbridge.old_global_thread_manager import check_out_thread_local_object, save_thread_local_object, thread_to_object_dict_lock
 
 class BioFormatsReader(ImageReader.ImageReader):
     def reader_name(self):
@@ -11,11 +11,32 @@ class BioFormatsReader(ImageReader.ImageReader):
         print("__init__ called", flush=True)
         print("TrID instance:", flush=True)
         #print(threading.get_ident(), flush=True)
-        bfthread = get_thread_local_object()
+        # bfthread = get_thread_local_object()
+        # if bfthread is None:
+        #     # the following throws:
+        #     bfthread = bfbridge.BFBridgeThread()
+        #     save_thread_local_object(bfthread)
+        from threading import get_ident
+        import os
+        thread_id = os.getpid() #get_ident()
+        bfthread = check_out_thread_local_object(thread_id)
         if bfthread is None:
-            # the following throws:
-            bfthread = bfbridge.BFBridgeThread()
-            save_thread_local_object(bfthread)
+            print("LOCK: none, now construct")
+            try:
+                bfthread = bfbridge.BFBridgeThread()
+                print("LOCK: constructed")
+            except Exception as f:
+                failure = f
+                print("LOCK: fail")
+                print(f)
+            save_thread_local_object(thread_id, bfthread)
+            print("LOCK: release")
+        else:
+            print("LOCK: using")
+            thread_to_object_dict_lock.acquire()
+        if bfthread is None:
+            raise failure
+
         # Conventionally internal attributes start with underscore.
         # When using them without underscore, there's the risk that
         # a property has the same name as a/the getter, which breaks
