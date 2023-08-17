@@ -22,7 +22,7 @@ class BioFormatsReader(ImageReader.ImageReader):
         import os
         thread_id = os.getpid() #get_ident()
         # using getpid here caused having a new thread that wasn't attached
-        bfthread = check_out_thread_local_object(thread_id)
+        #bfthread = check_out_thread_local_object(thread_id)
         # if bfthread is None:
         #     print("LOCK: none, now construct", flush=True)
         #     try:
