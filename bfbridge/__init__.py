@@ -4,7 +4,7 @@ import numpy as np
 import os
 import sys
 import threading
-import gtmc
+from . import gtmc
 
 # channels = 3 or 4 supported currently
 # interleaved: Boolean
