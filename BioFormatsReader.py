@@ -17,8 +17,8 @@ class BioFormatsReader(ImageReader.ImageReader):
 
     # Pick the reader
     def __init__(self, imagepath):
-        l = threading.local()
-        l.a = X()
+        self.l = threading.local()
+        self.l.a = X()
 
         print("__init__ called", flush=True)
         print("TrID instance:", flush=True)
