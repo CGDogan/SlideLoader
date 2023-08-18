@@ -10,8 +10,6 @@ class X:
     def __del__(self):
         print("dying thread", flush=True)
 
-l = threading.local()
-l.a = X()
 
 class BioFormatsReader(ImageReader.ImageReader):
     def reader_name(self):
@@ -24,7 +22,7 @@ class BioFormatsReader(ImageReader.ImageReader):
 
         print("__init__ called", flush=True)
         print("TrID instance:", flush=True)
-        #print(threading.get_ident(), flush=True)
+        print(threading.get_native_id(), flush=True)
         # bfthread = get_thread_local_object()
         # if bfthread is None:
         #     # the following throws:
