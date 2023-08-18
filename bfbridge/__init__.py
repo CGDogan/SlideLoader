@@ -4,6 +4,7 @@ import numpy as np
 import os
 import sys
 import threading
+import gtmc
 
 # channels = 3 or 4 supported currently
 # interleaved: Boolean
@@ -155,10 +156,24 @@ class BFBridgeVM:
             lib.bfbridge_free_error(potential_error)
             print(err, flush=True)
             raise RuntimeError(err)
+        self.owner_pid = os.getpid()
+
+    def __del__(self):
+        # Additionally we can check if now it's the same pid that created this object
+        if hasattr(self, "bfbridge_vm"):
+            lib.bfbridge_free_vm(self.bfbridge_vm)
 
 # You can create as many copies as needed in a single thread
 class BFBridgeThread:
     def __init__(self, bfbridge_vm):
+        if bfbridge_vm is None:
+            raise ValueError("BFBridgeInstance must be initialized with BFBridgeThread")
+
+
+        self.owner_pid = os.getpid()
+        if bfbridge_vm.owner_pid != self.owner_pid:
+            raise RuntimeError("JVM was created in a different process")
+
         self.bfbridge_thread = ffi.new("bfbridge_thread_t*")
         potential_error = lib.bfbridge_make_thread(self.bfbridge_thread, bfbridge_vm.bfbridge_vm)
         if potential_error != ffi.NULL:
@@ -166,8 +181,8 @@ class BFBridgeThread:
             lib.bfbridge_free_error(potential_error)
             print(err, flush=True)
             raise RuntimeError(err)
-        # TODO concurrency
-        self.owner_thread = os.getpid()
+        self.owner_thread = threading.get_native_id()
+        gtmc.change_ref_count(self.owner_thread, 1)
 
     def __copy__(self):
         raise RuntimeError("BFBridgeThread cannot be copied")
@@ -179,28 +194,20 @@ class BFBridgeThread:
     # Now we can define __del__
     def __del__(self):
         print("destroying BFBridgeThread")
-        # TODO Concurrency: fix memory leak
-        # C code takes care to not free if it wasn't initialized successfully
-        # but we need to take care about the Python counterpart
-        #if hasattr(self, "bfbridge_thread"):
-        #    lib.bfbridge_free_thread(self.bfbridge_thread)
+        if gtmc.change_ref_count(self.owner_thread, -1) == 0:
+            lib.bfbridge_free_thread(self.bfbridge_thread)
         print("destroyinged BFBridgeThread")
 
 # An instance can be used with only the thread object it was constructed with
 class BFBridgeInstance:
     def __init__(self, bfbridge_thread):
         print("About __init__ in __init__.py", flush=True)
-
         if bfbridge_thread is None:
             raise ValueError("BFBridgeInstance must be initialized with BFBridgeThread")
 
-        self.owner_thread = os.getpid() #threading.get_ident()
-
-        # Note: Sometimes self.owner_thread equals bfbridge_thread.owner_thread
-        # but that's because the last thread exited and new thread was created
-        # so the identifier was recycled but not the thread so the JVM won't work
-        if self.owner_thread != bfbridge_thread.owner_thread:
-            raise RuntimeError("BFBridgeInstance being made belongs to a different thread than BFBridgeThread supplied")
+        self.owner_thread = threading.get_native_id()
+        if bfbridge_thread.owner_thread != self.owner_thread:
+            raise RuntimeError("BFBridgeInstance was supplied a bfbridge_thread from a different thread")
 
         self.bfbridge_thread = bfbridge_thread.bfbridge_thread
         self.bfbridge_instance = ffi.new("bfbridge_instance_t*")
@@ -234,8 +241,7 @@ class BFBridgeInstance:
     def __return_from_buffer(self, length, isString):
         if length < 0:
             print(self.get_error_string())
-            length = 0
-        data = ffi.buffer(self.communication_buffer, length)
+            raise ValueError(self.get_error_string())
         if isString:
             return ffi.unpack(self.communication_buffer, length).decode("unicode_escape")
             # or ffi.string after if we set the null byte here

@@ -1,6 +1,6 @@
 import ImageReader
 import bfbridge
-from bfbridge.old_global_thread_manager import check_out_thread_local_object, save_thread_local_object, thread_to_object_dict_lock
+#from bfbridge.old_global_thread_manager import check_out_thread_local_object, save_thread_local_object, thread_to_object_dict_lock
 
 jvm = bfbridge.BFBridgeVM()
 
@@ -18,9 +18,9 @@ class BioFormatsReader(ImageReader.ImageReader):
         #     # the following throws:
         #     bfthread = bfbridge.BFBridgeThread()
         #     save_thread_local_object(bfthread)
-        from threading import get_ident
-        import os
-        thread_id = os.getpid() #get_ident()
+        #from threading import get_ident
+        #import os
+        #thread_id = os.getpid() #get_ident()
         # using getpid here caused having a new thread that wasn't attached
         #bfthread = check_out_thread_local_object(thread_id)
         # if bfthread is None:

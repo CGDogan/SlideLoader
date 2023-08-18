@@ -159,15 +159,14 @@ typedef struct bfbridge_thread
 
 // bfbridge_make_thread attaches the current thread to the JVM
 // and fills *dest. Calling when already attached is a noop
-// but it fills *dest if you lost it. (Not tested: It might
-// make the previous bfbridge_thread_t for this thread invalid)
+// and it fills *dest if you lost it.
 // On success, returns NULL and fills *dest
 // On failure, returns error, and it may have modified *dest
 BFBRIDGE_INLINE_ME_EXTRA bfbridge_error_t *bfbridge_make_thread(
     bfbridge_thread_t *dest,
     bfbridge_vm_t *vm);
 
-// Copies while making the freeing of the previous a noop.
+// Copies the data while making the freeing of the previous a noop.
 // Do not use for moving from one thread/process to another
 // Dest: doesn't need to be initialized but allocated
 // This function would benefit from restrict but if we inline, not necessary
@@ -177,6 +176,8 @@ BFBRIDGE_INLINE_ME void bfbridge_move_thread(
 // Does not free the thread struct but its contents
 // To move from one thread to another, free the current thread and call
 // bfbridge_make_thread on the new thread (or in the opposite order)
+// Important: bfbridge_make_thread can be called as many times in a single thread
+// but calling bfbridge_free_thread once will free for the whole thread.
 BFBRIDGE_INLINE_ME void bfbridge_free_thread(bfbridge_thread_t *);
 
 // Almost all functions that need a bfbridge_instance_t must be passed
