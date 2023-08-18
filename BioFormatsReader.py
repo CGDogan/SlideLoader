@@ -10,6 +10,8 @@ class X:
     def __del__(self):
         print("dying thread", flush=True)
 
+l = threading.local()
+l.a = X()
 
 class BioFormatsReader(ImageReader.ImageReader):
     def reader_name(self):
