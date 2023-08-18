@@ -4,12 +4,22 @@ import bfbridge
 
 jvm = bfbridge.BFBridgeVM()
 
+# todo deleteme 
+import threading
+class X:
+    def __del__(self):
+        print("dying thread", flush=True)
+
+
 class BioFormatsReader(ImageReader.ImageReader):
     def reader_name(self):
         return "bioformats"
 
     # Pick the reader
     def __init__(self, imagepath):
+        l = threading.local()
+        l.a = X()
+
         print("__init__ called", flush=True)
         print("TrID instance:", flush=True)
         #print(threading.get_ident(), flush=True)
