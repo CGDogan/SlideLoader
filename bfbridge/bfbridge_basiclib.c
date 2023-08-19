@@ -432,6 +432,7 @@ bfbridge_error_t *bfbridge_make_thread(
     prepare_method_id(BFGetMPPX, "(I)D");
     prepare_method_id(BFGetMPPY, "(I)D");
     prepare_method_id(BFGetMPPZ, "(I)D");
+    prepare_method_id(BFDumpOMEXMLMetadata, "()I");
     prepare_method_id(BFToolsShouldGenerate, "()I");
     prepare_method_id(BFToolsGenerateSubresolutions, "(III)I");
 
@@ -912,6 +913,12 @@ double bf_get_mpp_z(
     int series)
 {
     return BFFUNC(BFGetMPPZ, Double, series);
+}
+
+int bf_dump_ome_xml_metadata(
+    bfbridge_instance_t *instance, bfbridge_thread_t *thread)
+{
+    return BFFUNCV(BFDumpOMEXMLMetadata, Int);
 }
 
 int bf_tools_should_generate(

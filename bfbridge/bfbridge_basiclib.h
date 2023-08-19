@@ -153,6 +153,7 @@ typedef struct bfbridge_thread
     jmethodID BFGetMPPX;
     jmethodID BFGetMPPY;
     jmethodID BFGetMPPZ;
+    jmethodID BFDumpOMEXMLMetadata;
     jmethodID BFToolsShouldGenerate;
     jmethodID BFToolsGenerateSubresolutions;
 } bfbridge_thread_t;
@@ -386,6 +387,9 @@ BFBRIDGE_INLINE_ME double bf_get_mpp_y(
 BFBRIDGE_INLINE_ME double bf_get_mpp_z(
     bfbridge_instance_t *instance, bfbridge_thread_t *thread,
     int series);
+
+BFBRIDGE_INLINE_ME int bf_dump_ome_xml_metadata(
+    bfbridge_instance_t *instance, bfbridge_thread_t *thread)
 
 BFBRIDGE_INLINE_ME int bf_tools_should_generate(
     bfbridge_instance_t *instance, bfbridge_thread_t *thread);
