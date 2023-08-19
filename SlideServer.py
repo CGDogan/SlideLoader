@@ -227,6 +227,7 @@ def singleSlide(filepath):
 def singleThumb(filepath):
     size = flask.request.args.get('size', default=50, type=int)
     print("Called gethumbnail", flush=True)
+    print(size, flush=True)
     size = max(size, 500)
     res = getThumbnail(filepath, size)
     if (hasattr(res, 'error')):
