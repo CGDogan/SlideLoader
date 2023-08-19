@@ -258,7 +258,7 @@ class BFBridgeInstance:
             print(self.get_error_string())
             return False
 
-    # Should be called only after the last method call returned an error code
+    # Should be called only just after the last method call returned an error code
     def get_error_string(self):
         length = lib.bf_get_error_length(self.bfbridge_instance, self.bfbridge_thread)
         return self.__return_from_buffer(length, True)
@@ -423,6 +423,10 @@ class BFBridgeInstance:
 
     def get_mpp_z(self, no):
         return lib.bf_get_mpp_z(self.bfbridge_instance, self.bfbridge_thread, no)
+
+    def dump_ome_xml_metadata(self):
+        return lib.bf_dump_ome_xml_metadata(self.bfbridge_instance, self.bfbridge_thread)
+
 
 # TODO Deleteme these
 #thre = BFBridgeThread()

@@ -24,6 +24,8 @@ import pathlib
 import logging
 from gDriveDownload import start, afterUrlAuth, callApi
 from threading import Thread
+# new
+from file_extensions import ALLOWED_EXTENSIONS
 
 try:
     from io import BytesIO
@@ -47,8 +49,8 @@ app.config['TOKEN_SIZE'] = 10
 app.config['SECRET_KEY'] = os.urandom(24)
 app.config['ROI_FOLDER'] = "/images/roiDownload"
 
-
-ALLOWED_EXTENSIONS = set(['svs', 'tif', 'tiff', 'vms', 'vmu', 'ndpi', 'scn', 'mrxs', 'bif', 'svslide', 'png', 'jpg', 'dcm'])    
+# DELETE ME
+# ALLOWED_EXTENSIONS = set(['svs', 'tif', 'tiff', 'vms', 'vmu', 'ndpi', 'scn', 'mrxs', 'bif', 'svslide', 'png', 'jpg', 'dcm'])    
 
 # should be used instead of secure_filename to create new files whose extensions are important.
 # use secure_filename to access previous files.

@@ -58,15 +58,19 @@ class BioFormatsReader(ImageReader.ImageReader):
 
         bfthread_holder.bfthread = bfbridge.BFBridgeThread(jvm)
         if bfthread_holder.bfthread is None:
-            raise RuntimeError("no bfthread")
+            raise RuntimeError("cannot make bfbridge thread")
 
         # Conventionally internal attributes start with underscore.
         # When using them without underscore, there's the risk that
         # a property has the same name as a/the getter, which breaks
         # the abstract class. Hence all internal attributes start with underscore.
         self._bfreader = bfbridge.BFBridgeInstance(bfthread_holder.bfthread)
+        if self._bfreader is None:
+            raise RuntimeError("cannot make bioformats instance")
         print("__init__ called2", flush=True)
-        self._bfreader.open(imagepath)
+        code = self._bfreader.open(imagepath)
+        if code < 0:
+            raise IOError("Could not open file " + imagepath + ": " + self._bfreader.get_error_string())
         print("__init__ called3", flush=True)
         self._level_count = self._bfreader.get_resolution_count()
         self._dimensions = (self._bfreader.get_size_x(), self._bfreader.get_size_y())

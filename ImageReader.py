@@ -11,6 +11,11 @@ class ImageReader(metaclass=ABCMeta):
     def reader_name(self):
         return None
     
+    # Raises exception on error
+    @abstractmethod
+    def __init__(self):
+        pass
+
     @property
     @abstractmethod
     def level_count(self):
@@ -38,10 +43,14 @@ class ImageReader(metaclass=ABCMeta):
     def get_thumbnail(self, max_size):
         pass
 
-import OpenSlideReader
-import BioFormatsReader
+    @abstractmethod
+    def get_basic_metadata(self):
+        pass
 
-readers = [OpenSlideReader.OpenSlideReader, BioFormatsReader.BioFormatsReader]
+from OpenSlideReader import OpenSlideReader
+from BioFormatsReader import BioFormatsReader
+
+readers = [OpenSlideReader, BioFormatsReader]
 
 # Replaces the constructor of the abstract class
 # Usage:
@@ -69,8 +78,6 @@ def ImageReader(imagepath):
         except Exception as e:
             print("See exception:", flush="True")
             print(e, flush="True")
-            continue
-        if reader is None:
             continue
     print("trying one3", flush=True)
     return reader
