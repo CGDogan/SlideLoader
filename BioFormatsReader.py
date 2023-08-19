@@ -20,6 +20,7 @@ class BioFormatsReader(ImageReader.ImageReader):
     def __init__(self, imagepath):
         #self.__class__.l = threading.local()
         #self.__class__.l.a = X()
+        global l
         l.a = X()
 
         print("__init__ called", flush=True)
