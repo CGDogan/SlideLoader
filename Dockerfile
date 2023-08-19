@@ -86,6 +86,7 @@ COPY ./ ./
 RUN cp test_imgs/* /images/
 RUN cd bfbridge && python3 setup_test_bfbridge.py
 
+ENV BFBRIDGE_CACHEDIR=/tmp/
 
 EXPOSE 4000
 EXPOSE 4001
