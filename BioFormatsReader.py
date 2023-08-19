@@ -1,8 +1,12 @@
 import ImageReader
 import bfbridge
+import threading
 #from bfbridge.old_global_thread_manager import check_out_thread_local_object, save_thread_local_object, thread_to_object_dict_lock
 
 jvm = bfbridge.BFBridgeVM()
+
+# Try to keep BioFormats alive as long as possible
+bfthread_holder = threading.local()
 
 # todo deleteme 
 import threading
@@ -50,15 +54,17 @@ class BioFormatsReader(ImageReader.ImageReader):
         # else:
         #     print("LOCK: using")
         #     thread_to_object_dict_lock.acquire()
-        self.bfthread = bfbridge.BFBridgeThread(jvm)
-        if self.bfthread is None:
+        global bfthread_holder
+
+        bfthread_holder.bfthread = bfbridge.BFBridgeThread(jvm)
+        if bfthread_holder.bfthread is None:
             raise RuntimeError("no bfthread")
 
         # Conventionally internal attributes start with underscore.
         # When using them without underscore, there's the risk that
         # a property has the same name as a/the getter, which breaks
         # the abstract class. Hence all internal attributes start with underscore.
-        self._bfreader = bfbridge.BFBridgeInstance(self.bfthread)
+        self._bfreader = bfbridge.BFBridgeInstance(bfthread_holder.bfthread)
         print("__init__ called2", flush=True)
         self._bfreader.open(imagepath)
         print("__init__ called3", flush=True)
