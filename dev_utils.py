@@ -11,11 +11,10 @@ post_url = "http://ca-back:4010/data/Slide/post"
 
 
 # given a path, get metadata
-def getMetadata(filename, upload_folder, extended):
+def getMetadata(filepath, extended, raise_exception):
     print("getMetadata called", file=sys.stderr)
     # TODO consider restricting filepath
     metadata = {}
-    filepath = os.path.join(upload_folder, filename)
     if not os.path.isfile(filepath):
         msg = {"error": "No such file"}
         print(msg)
