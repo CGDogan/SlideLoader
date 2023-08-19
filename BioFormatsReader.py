@@ -10,6 +10,7 @@ class X:
     def __del__(self):
         print("dying thread", flush=True)
 
+l = threading.local()
 
 class BioFormatsReader(ImageReader.ImageReader):
     def reader_name(self):
@@ -17,8 +18,9 @@ class BioFormatsReader(ImageReader.ImageReader):
 
     # Pick the reader
     def __init__(self, imagepath):
-        self.__class__.l = threading.local()
-        self.__class__.l.a = X()
+        #self.__class__.l = threading.local()
+        #self.__class__.l.a = X()
+        l.a = X()
 
         print("__init__ called", flush=True)
         print("TrID instance:", flush=True)
