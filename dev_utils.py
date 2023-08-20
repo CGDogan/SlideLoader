@@ -3,7 +3,7 @@ import os
 import json
 import requests
 import sys
-import ImageReader
+from ImageReader import ImageReader
 
 import openslide
 
