@@ -389,7 +389,7 @@ BFBRIDGE_INLINE_ME double bf_get_mpp_z(
     int series);
 
 BFBRIDGE_INLINE_ME int bf_dump_ome_xml_metadata(
-    bfbridge_instance_t *instance, bfbridge_thread_t *thread)
+    bfbridge_instance_t *instance, bfbridge_thread_t *thread);
 
 BFBRIDGE_INLINE_ME int bf_tools_should_generate(
     bfbridge_instance_t *instance, bfbridge_thread_t *thread);
