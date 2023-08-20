@@ -143,6 +143,7 @@ class BioFormatsReader(ImageReader.ImageReader):
         # "comment" attribute of metadata
         print(str(ome_xml.images[0]), flush=True)
         print(str(ome_xml.instruments[0]), flush=True)
+        print(str(ome_xml), flush=True)
         print("size")
         print(ome_xml.images[0].pixels.size_x, flush=True)
         print(ome_xml.images[0].pixels.size_y, flush=True)
@@ -154,12 +155,19 @@ class BioFormatsReader(ImageReader.ImageReader):
         try:
             metadata['mpp-x'] = str(ome_xml.images[0].pixels.physical_size_x)
             metadata['mpp-y'] = str(ome_xml.images[0].pixels.physical_size_y)
-        except BaseException as e:
+        except:
             metadata['mpp-x'] = "0"
             metadata['mpp-y'] = "0"
         metadata['vendor'] = self._vendor
         metadata['level_count'] = int(self._level_count)
-        metadata['objective'] = ome_xml.instruments[0]
+        try:
+            metadata['objective'] = ome_xml.instruments[0].nominal_magnification
+        except:
+            try:
+                metadata['objective'] = ome_xml.instruments[0].calibrated_magnification
+            except:
+                metadata['objective'] = -1.0
+        metadata['comment'] =
         
         # TODO IA: continue and complete
         # https://www.openmicroscopy.org/Schemas/Documentation/Generated/OME-2016-06/ome_xsd.html#Pixels_PhysicalSizeX
