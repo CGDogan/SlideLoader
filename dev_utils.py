@@ -22,7 +22,7 @@ def getMetadata(filepath, extended, raise_exception):
         print(msg)
         return msg
     try:
-        reader = ImageReader.ImageReader(filepath)
+        reader = ImageReader.construct_reader(filepath)
     except BaseException as e:
         if raise_exception:
             raise e

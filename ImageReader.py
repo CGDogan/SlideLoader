@@ -62,11 +62,10 @@ readers = [OpenSlideReader, BioFormatsReader]
 
 # Replaces the constructor of the abstract class
 # Usage:
-# from ImageReader import ImageReader
-# image = ImageReader("/file/path")
+# image = ImageReader.construct_reader("/file/path")
 # Returns a reader
 # Otherwise raises an object with attribute "error"
-def ImageReader(imagepath):
+def construct_reader(imagepath):
     import threading
     for thread in threading.enumerate(): 
         print(thread.name)
