@@ -85,6 +85,7 @@ class BioFormatsReader(ImageReader.ImageReader):
         if code < 0:
             raise IOError("Could not open file " + imagepath + ": " + self._bfreader.get_error_string())
         print("__init__ called3", flush=True)
+        # Note: store actually the format in self._vendor ("Hamamatsu NDPI" instead of "Hamamatsu")
         self._vendor = self._bfreader.get_format()
         self._level_count = self._bfreader.get_resolution_count()
         self._dimensions = (self._bfreader.get_size_x(), self._bfreader.get_size_y())
@@ -138,7 +139,10 @@ class BioFormatsReader(ImageReader.ImageReader):
         except BaseException as e:
             raise RuntimeError("get_basic_metadata: OME-XML parsing of metadata failed, error: " + \
                 str(e) + " when parsing: " + ome_xml)
-        ome_xml.images[0]
+        
+        # https://www.openmicroscopy.org/Schemas/Documentation/Generated/OME-2016-06/ome_xsd.html
+        # https://bio-formats.readthedocs.io/en/latest/metadata-summary.html
+
         print(ome_xml.images[0], flush=True)
         # "comment" attribute of metadata
         print(str(ome_xml.images[0]), flush=True)
@@ -174,10 +178,9 @@ class BioFormatsReader(ImageReader.ImageReader):
         metadata['specimen'] = ""
         metadata['md5sum'] = self._md5
 
-        
+
+        # TODO IA: Fix refresh on "{'type': 'bioformats', 'error': \"bioformats: 'int' object has no attribute 'a'\"}"
         # TODO IA: continue and complete
-        # https://www.openmicroscopy.org/Schemas/Documentation/Generated/OME-2016-06/ome_xsd.html#Pixels_PhysicalSizeX
-        # https://bio-formats.readthedocs.io/en/latest/metadata-summary.html objective
 
 
         
