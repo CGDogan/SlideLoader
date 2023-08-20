@@ -81,7 +81,8 @@ def construct_reader(imagepath):
     print("starting readers loop,", flush=True)
     for r in readers:
         print("inloop1,", flush=True)
-        print(r.reader_name(), flush=True)
+        print(r.reader_name, flush=True)
+        print("inloop12", flush=True)
         print(r.extensions_set, flush=True)
         print(extension, flush=True)
         if extension in r.extensions_set:
