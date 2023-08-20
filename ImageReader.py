@@ -7,9 +7,15 @@ from abc import ABCMeta, abstractmethod
 # Allow near drop-in replacements for OpenSlide-Python
 class ImageReader(metaclass=ABCMeta):
     # currently: "openslide", "bioformats"
+    @property
     @abstractmethod
     def reader_name(self):
         return None
+    
+    @property
+    @abstractmethod
+    def extensions_set(self):
+        pass
     
     # Raises exception on error
     @abstractmethod
@@ -43,13 +49,15 @@ class ImageReader(metaclass=ABCMeta):
     def get_thumbnail(self, max_size):
         pass
 
+    # raises exception
     @abstractmethod
-    def get_basic_metadata(self):
+    def get_basic_metadata(self, extended):
         pass
 
 from OpenSlideReader import OpenSlideReader
 from BioFormatsReader import BioFormatsReader
 
+# Decreasing order of importance
 readers = [OpenSlideReader, BioFormatsReader]
 
 # Replaces the constructor of the abstract class
@@ -57,7 +65,7 @@ readers = [OpenSlideReader, BioFormatsReader]
 # from ImageReader import ImageReader
 # image = ImageReader("/file/path")
 # Returns a reader
-# Returns None if no compatible reader was found
+# Otherwise raises an object with attribute "error"
 def ImageReader(imagepath):
     import threading
     for thread in threading.enumerate(): 
@@ -67,17 +75,28 @@ def ImageReader(imagepath):
     print(threading.get_native_id())
     print(threading.get_ident())
     print("my thread^", flush=True)
-    # Decreasing order of importance
-    reader = None
+
+    relevant_readers = []
+    extension = imagepath.split(".")[-1].lower()
+
     for r in readers:
-        print("trying one", flush=True)
+        if extension in r.extensions_set:
+            relevant_readers.append(r)
+
+    if len(relevant_readers) == 0:
+        raise RuntimeError({"error": "File extension unsupported, no readers are compatible"})
+
+    image_type = []
+    reader = None
+    errors = []
+    for r in relevant_readers:
         try:
-            print("trying one0:", flush="True")
             reader = r(imagepath)
-            print("trying one1:", flush="True")
+            break
         except Exception as e:
-            print("See exception:", flush="True")
-            print(e, flush="True")
+            image_type.append(r.reader_name)
+            errors.append(r.reader_name + ": " + str(e))
             continue
-    print("trying one3", flush=True)
+    if reader is None:
+        raise RuntimeError({"type": image_type.join(","), "error": errors.join(", ")})
     return reader

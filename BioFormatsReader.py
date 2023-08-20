@@ -1,6 +1,9 @@
 import ImageReader
 import bfbridge
 import threading
+import dev_utils
+import ome_types
+from file_extensions import BIOFORMATS_EXTENSIONS
 #from bfbridge.old_global_thread_manager import check_out_thread_local_object, save_thread_local_object, thread_to_object_dict_lock
 
 jvm = bfbridge.BFBridgeVM()
@@ -17,8 +20,13 @@ class X:
 l = threading.local()
 
 class BioFormatsReader(ImageReader.ImageReader):
+    @property
     def reader_name(self):
         return "bioformats"
+
+    @property
+    def extensions_set(self):
+        return BIOFORMATS_EXTENSIONS
 
     # Pick the reader
     def __init__(self, imagepath):
@@ -56,9 +64,8 @@ class BioFormatsReader(ImageReader.ImageReader):
         #     thread_to_object_dict_lock.acquire()
         global bfthread_holder
 
-        bfthread_holder.bfthread = bfbridge.BFBridgeThread(jvm)
-        if bfthread_holder.bfthread is None:
-            raise RuntimeError("cannot make bfbridge thread")
+        if not hasattr(bfthread_holder, "bfthread"):
+            bfthread_holder.bfthread = bfbridge.BFBridgeThread(jvm)
 
         # Conventionally internal attributes start with underscore.
         # When using them without underscore, there's the risk that
@@ -68,6 +75,7 @@ class BioFormatsReader(ImageReader.ImageReader):
         if self._bfreader is None:
             raise RuntimeError("cannot make bioformats instance")
         print("__init__ called2", flush=True)
+        self._image_path = imagepath
         code = self._bfreader.open(imagepath)
         if code < 0:
             raise IOError("Could not open file " + imagepath + ": " + self._bfreader.get_error_string())
@@ -104,3 +112,38 @@ class BioFormatsReader(ImageReader.ImageReader):
     def get_thumbnail(self, max_size):
         print("Starting BioFormatsReader get_thumbnail", flush=True)
         return self._bfreader.open_thumb_bytes_pil_image(0, max_size[0], max_size[1])
+
+    def get_basic_metadata(self, extended):
+        metadata = {}
+        if not hasattr(self, "_md5"):
+            self._md5 = dev_utils.file_md5(self._image_path)
+        metadata['md5sum'] = self._md5
+
+        try:
+            ome_xml = self._bfreader.dump_ome_xml_metadata()
+        except BaseException as e:
+            raise ValueError("XML metadata too large for file considering the preallocated buffer length. " + str(e))
+        ome_xml = ome_types.from_xml(ome_xml)
+        ome_xml.images[0]
+        print("Here is our metadata:")
+        print(ome_xml.images[0])
+        
+
+        # TODO IA: import ome-xml, dump xml, save xml IA, 
+
+        # metadata['mpp-x']
+        # metadata['mpp-y']
+        # metadata['height']
+        #     or slideData.get("openslide.level[0].height", None)
+        # metadata['width']
+        #     or slideData.get( "openslide.level[0].width", None)
+        # metadata['vendor']
+        # metadata['level_count']
+        # metadata['objective']
+        #     or slideData.get("aperio.AppMag", -1.0))
+        # metadata['comment']
+        # metadata['study']
+        # metadata['specimen']
+        return metadata
+
+        
