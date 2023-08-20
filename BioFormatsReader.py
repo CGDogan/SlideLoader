@@ -122,9 +122,14 @@ class BioFormatsReader(ImageReader.ImageReader):
         try:
             ome_xml = self._bfreader.dump_ome_xml_metadata()
         except BaseException as e:
-            raise ValueError("XML metadata too large for file considering the preallocated buffer length. " + str(e))
+            raise OverflowError("XML metadata too large for file considering the preallocated buffer length. " + str(e))
         print(ome_xml, flush=True)
-        ome_xml = ome_types.from_xml(ome_xml)
+        # TODO try except here IA
+        try:
+            ome_xml = ome_types.from_xml(ome_xml)
+        except BaseException as e:
+            raise RuntimeError("get_basic_metadata: OME-XML parsing of metadata failed, error: " + \
+                str(e) + " when parsing: " + ome_xml)
         ome_xml.images[0]
         print("Here is our metadata:")
         print(ome_xml.images[0])

@@ -1,4 +1,5 @@
 openslide-python
+ome-types
 flask
 Werkzeug
 flask-cors
@@ -9,4 +10,3 @@ google-api-python-client
 google-auth-httplib2
 google-auth-oauthlib
 pycurl
-ome-types
