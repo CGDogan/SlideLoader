@@ -123,6 +123,8 @@ class BioFormatsReader(ImageReader.ImageReader):
         if not hasattr(self, "_md5"):
             self._md5 = dev_utils.file_md5(self._image_path)
         metadata['md5sum'] = self._md5
+        metadata['width'] = self._dimensions[0]
+        metadata['height'] = self._dimensions[0]
 
         try:
             ome_xml = self._bfreader.dump_ome_xml_metadata()
@@ -144,9 +146,9 @@ class BioFormatsReader(ImageReader.ImageReader):
         print(str(ome_xml.images[0]), flush=True)
         print("size")
         print(ome_xml.images[0].pixels.size_x, flush=True)
-        print(ome_xml.images[0].size_y, flush=True)
-        print(ome_xml.images[0].physical_size_x, flush=True)
-        print(ome_xml.images[0].physical_size_y, flush=True)
+        print(ome_xml.images[0].pixels.size_y, flush=True)
+        print(ome_xml.images[0].pixels.physical_size_x, flush=True)
+        print(ome_xml.images[0].pixels.physical_size_y, flush=True)
         print(ome_xml.images[0].size_x, flush=True)
         # TODO IA: continue and complete
         # https://www.openmicroscopy.org/Schemas/Documentation/Generated/OME-2016-06/ome_xsd.html#Pixels_PhysicalSizeX
