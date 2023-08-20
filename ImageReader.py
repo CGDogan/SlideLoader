@@ -12,10 +12,10 @@ class ImageReader(metaclass=ABCMeta):
     def reader_name(self):
         return None
     
-    @property
-    @abstractmethod
-    def extensions_set(self):
-        pass
+    #@property
+    #@abstractmethod
+    #def extensions_set(self):
+    #    pass
     
     # Raises exception on error
     @abstractmethod
