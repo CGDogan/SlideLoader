@@ -243,7 +243,7 @@ class BFBridgeInstance:
             print(self.get_error_string())
             raise ValueError(self.get_error_string())
         if isString:
-            return ffi.unpack(self.communication_buffer, length).decode("unicode_escape")
+            return ffi.unpack(self.communication_buffer, length).decode("utf-8")
             # or ffi.string after if we set the null byte here
         else:
             return ffi.buffer(self.communication_buffer, length)
