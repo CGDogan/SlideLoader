@@ -8,7 +8,7 @@ from file_extensions import BIOFORMATS_EXTENSIONS
 
 jvm = bfbridge.BFBridgeVM()
 
-# Try to keep BioFormats alive as long as possible
+# Try to keep BioFormats thread alive as long as possible
 bfthread_holder = threading.local()
 
 # todo deleteme 
@@ -124,18 +124,18 @@ class BioFormatsReader(ImageReader.ImageReader):
         except BaseException as e:
             raise OverflowError("XML metadata too large for file considering the preallocated buffer length. " + str(e))
         print(ome_xml, flush=True)
-        print("Starting metadata")
+        print("Starting metadata", flush=True)
         # TODO try except here IA
         try:
             ome_xml = ome_types.from_xml(ome_xml)
-            print("continuing metadata")
+            print("continuing metadata", flush=True)
 
         except BaseException as e:
             raise RuntimeError("get_basic_metadata: OME-XML parsing of metadata failed, error: " + \
                 str(e) + " when parsing: " + ome_xml)
         ome_xml.images[0]
-        print("Here is our metadata:")
-        print(ome_xml.images[0])
+        print("Here is our metadata:", flush=True)
+        print(ome_xml.images[0], flush=True)
         
 
         # TODO IA: import ome-xml, dump xml, save xml IA, 
