@@ -14,7 +14,7 @@ import urllib
 import flask
 import flask_cors
 from flask import request
-import ImageReader
+from ImageReader import construct_reader
 from werkzeug.utils import secure_filename
 import dev_utils
 import requests
@@ -81,7 +81,7 @@ def getThumbnail(filename, size=50):
         return {"error": "No such file"}
     try:
         print("getThumbnail called, constructing", flush=True)
-        slide = ImageReader.ImageReader(filepath)
+        slide = construct_reader(filepath)
         print("getThumbnail to be called", flush=True)
         thumb = slide.get_thumbnail((size, size))
         print("slide.get_thumbnail returned", flush=True)
@@ -525,7 +525,7 @@ def convert(fname, input_dir , output_dir):
     try:
         
         save_name = fname.split(".")[0] + ".jpg"
-        os_obj = ImageReader(input_dir+"/"+fname)
+        os_obj = construct_reader(input_dir+"/"+fname)
         w, h = os_obj.dimensions
         w_rep, h_rep = int(w/UNIT_X)+1, int(h/UNIT_Y)+1
         w_end, h_end = w%UNIT_X, h%UNIT_Y
