@@ -176,30 +176,14 @@ class BioFormatsReader(ImageReader.ImageReader):
                 metadata['objective'] = ome_xml.instruments[0].objectives[0].calibrated_magnification
             except:
                 metadata['objective'] = -1.0
-        metadata['comment'] = ome_xml_raw
+        # The following caused result to be shown incorrectly due to https://github.com/camicroscope/SlideLoader/issues/73
+        # Also, it's a too long string because BioFormats tries to show the complete metadata.
+        # metadata['comment'] = ome_xml_raw
+        metadata['comment'] = ""
         metadata['study'] = ""
         metadata['specimen'] = ""
         metadata['md5sum'] = self._md5
 
-
-        # TODO IA: Fix refresh on "{'type': 'bioformats', 'error': \"bioformats: 'int' object has no attribute 'a'\"}"
-        # TODO IA: continue and complete
-
-
-        
-
-        # TODO IA: import ome-xml, dump xml, save xml IA, 
-        # metadata['height']
-        # metadata['width']
-        # metadata['mpp-x']
-        # metadata['mpp-y']
-        # metadata['vendor']
-        # metadata['level_count']
-        # metadata['objective']
-        #     or slideData.get("aperio.AppMag", -1.0))
-        # metadata['comment']
-        # metadata['study']
-        # metadata['specimen']
         if not hasattr(self, "_metadata"):
             self._metadata = metadata
         return metadata

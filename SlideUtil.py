@@ -3,7 +3,7 @@ import subprocess
 import time
 from multiprocessing.pool import ThreadPool
 
-import openslide
+from ImageReader import construct_reader
 
 from dev_utils import getMetadata
 from dev_utils import postslide
@@ -41,7 +41,7 @@ def openslidedata(metadata):
     metadata['timestamp'] = time.time()
     thumbnail_size = config.get('thumbnail_size', None)
     if thumbnail_size:
-        slide = openslide.OpenSlide(metadata['location'])
+        slide = construct_reader(metadata['location'])
         gen_thumbnail(metadata['location'], slide, thumbnail_size)
     return metadata
 
