@@ -104,8 +104,8 @@ def construct_reader(imagepath):
             reader = r(imagepath)
             break
         except Exception as e:
-            image_type.append(r.reader_name)
-            errors.append(r.reader_name + ": " + str(e))
+            image_type.append(r.reader_name())
+            errors.append(r.reader_name() + ": " + str(e))
             continue
     if reader is None:
         raise RuntimeError({"type": image_type.join(","), "error": errors.join(", ")})
