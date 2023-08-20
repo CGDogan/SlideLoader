@@ -141,6 +141,8 @@ class BioFormatsReader(ImageReader.ImageReader):
         ome_xml.images[0]
         print("Here is our metadata:", flush=True)
         print(ome_xml.images[0], flush=True)
+        print(str(ome_xml.images[0]), flush=True)
+
         
 
         # TODO IA: import ome-xml, dump xml, save xml IA, 
