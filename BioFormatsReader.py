@@ -19,7 +19,7 @@ class X:
     def __del__(self):
         print("dying thread " + self.x, flush=True)
 
-l = threading.local()
+loo = threading.local()
 
 class BioFormatsReader(ImageReader.ImageReader):
     @staticmethod
@@ -34,9 +34,9 @@ class BioFormatsReader(ImageReader.ImageReader):
     def __init__(self, imagepath):
         #self.__class__.l = threading.local()
         #self.__class__.l.a = X()
-        global l
-        if not hasattr(l, 'a'):
-            l.a = X("now")
+        global loo
+        if not hasattr(loo, 'a'):
+            loo.a = X("now")
         if not hasattr(dev_utils.ll, "u"):
             dev_utils.ll.u = X("later?")
 
