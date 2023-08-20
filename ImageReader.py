@@ -83,7 +83,7 @@ def ImageReader(imagepath):
     for r in readers:
         if extension in r.extensions_set:
             relevant_readers.append(r)
-
+    print("ending readers loop,", flush=True)
     if len(relevant_readers) == 0:
         raise RuntimeError({"error": "File extension unsupported, no readers are compatible"})
 
