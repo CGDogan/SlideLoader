@@ -80,7 +80,9 @@ def construct_reader(imagepath):
 
     print("starting readers loop,", flush=True)
     for r in readers:
+        print("inloop1,", flush=True)
         if extension in r.extensions_set:
+            print("inloop2,", flush=True)
             relevant_readers.append(r)
     print("ending readers loop,", flush=True)
     if len(relevant_readers) == 0:
