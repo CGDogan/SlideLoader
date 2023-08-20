@@ -94,6 +94,8 @@ class BioFormatsReader(ImageReader.ImageReader):
             self._bfreader.set_current_resolution(l)
             self._level_dimensions.append( \
                 (self._bfreader.get_size_x(), self._bfreader.get_size_y()))
+        print("dimensions:")
+        print(self._level_dimensions)
 
     @property
     def level_count(self):
