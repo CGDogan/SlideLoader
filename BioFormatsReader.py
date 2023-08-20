@@ -167,7 +167,7 @@ class BioFormatsReader(ImageReader.ImageReader):
                 metadata['objective'] = ome_xml.instruments[0].calibrated_magnification
             except:
                 metadata['objective'] = -1.0
-        metadata['comment'] =
+        metadata['comment'] = 0
         
         # TODO IA: continue and complete
         # https://www.openmicroscopy.org/Schemas/Documentation/Generated/OME-2016-06/ome_xsd.html#Pixels_PhysicalSizeX
