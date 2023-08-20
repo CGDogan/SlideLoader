@@ -425,7 +425,8 @@ class BFBridgeInstance:
         return lib.bf_get_mpp_z(self.bfbridge_instance, self.bfbridge_thread, no)
 
     def dump_ome_xml_metadata(self):
-        return lib.bf_dump_ome_xml_metadata(self.bfbridge_instance, self.bfbridge_thread)
+        length = lib.bf_dump_ome_xml_metadata(self.bfbridge_instance, self.bfbridge_thread)
+        return self.__return_from_buffer(length, True)
 
 
 # TODO Deleteme these

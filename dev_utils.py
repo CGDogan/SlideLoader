@@ -5,8 +5,6 @@ import requests
 import sys
 import ImageReader
 
-import openslide
-
 post_url = "http://ca-back:4010/data/Slide/post"
 
 

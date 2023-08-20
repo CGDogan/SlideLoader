@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-import openslide # to get required slide metadata
+import dev_utils # to get required slide metadata
 import csv # to read csv
 import sys # for csv limit
 import os # for os and filepath utils
@@ -8,7 +8,6 @@ import argparse # to read arguments
 import json # for json in and out
 import requests # for api and pathdb in and out
 import hashlib
-import dev_utils
 
 # for large csv fields, especially segmentations
 csv.field_size_limit(sys.maxsize)
@@ -49,7 +48,7 @@ def file_md5(fileName):
     return m.hexdigest()
 
 # get fields openslide expects
-def openslidedata(manifest):
+def imagedata(manifest):
     for img in manifest:
         img['location'] = img.get("path", "") or img.get("location", "") or img.get("filename", "") or img.get("file", "")
         metadata = dev_utils.getMetadata(img['location'], False, True)
@@ -147,7 +146,7 @@ with open(args.f, 'r') as f:
 
 # perform slide lookup for results, as applicable
 if (args.i == "slide"):
-    manifest = openslidedata(manifest)
+    manifest = imagedata(manifest)
 else:
 
     if (args.lt == "camic"):
