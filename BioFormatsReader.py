@@ -132,7 +132,7 @@ class BioFormatsReader(ImageReader.ImageReader):
         print(ome_xml_raw, flush=True)
         print("Starting metadata", flush=True)
         print("raw_str:")
-        print(type(ome_xml_raw))
+        print(str(ome_xml_raw))
         print(ome_xml_raw)
         # TODO try except here IA
         try:
