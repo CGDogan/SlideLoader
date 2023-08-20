@@ -149,7 +149,6 @@ class BioFormatsReader(ImageReader.ImageReader):
         print(ome_xml.images[0].pixels.size_y, flush=True)
         print(ome_xml.images[0].pixels.physical_size_x, flush=True)
         print(ome_xml.images[0].pixels.physical_size_y, flush=True)
-        metadata['md5sum'] = self._md5
         metadata['width'] = str(self._dimensions[0])
         metadata['height'] = str(self._dimensions[1])
         try:
@@ -160,6 +159,9 @@ class BioFormatsReader(ImageReader.ImageReader):
             metadata['mpp-y'] = "0"
         metadata['vendor'] = self._vendor
         metadata['level_count'] = int(self._level_count)
+        # TODO IA: fix maginification
+        print("magnification:")
+        print(ome_xml.instruments[0], flush=True)
         try:
             metadata['objective'] = ome_xml.instruments[0].nominal_magnification
         except:
@@ -167,7 +169,12 @@ class BioFormatsReader(ImageReader.ImageReader):
                 metadata['objective'] = ome_xml.instruments[0].calibrated_magnification
             except:
                 metadata['objective'] = -1.0
+        # TODO: need to completely expand XML IA
         metadata['comment'] = 0
+        metadata['study'] = ""
+        metadata['speciment'] = ""
+        metadata['md5sum'] = self._md5
+
         
         # TODO IA: continue and complete
         # https://www.openmicroscopy.org/Schemas/Documentation/Generated/OME-2016-06/ome_xsd.html#Pixels_PhysicalSizeX
