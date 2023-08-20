@@ -34,6 +34,7 @@ class BioFormatsReader(ImageReader.ImageReader):
         #self.__class__.l.a = X()
         global l
         l.a = X()
+        dev_utils.ll = X()
 
         print("__init__ called", flush=True)
         print("TrID instance:", flush=True)

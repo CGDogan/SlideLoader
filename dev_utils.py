@@ -7,7 +7,14 @@ import ImageReader
 
 post_url = "http://ca-back:4010/data/Slide/post"
 
+# deleteme
+# todo deleteme 
+import threading
+class X:
+    def __del__(self):
+        print("dying thread more effort later?", flush=True)
 
+ll = threading.local()
 
 # given a path, get metadata
 # if raise_exception is false, returns an object with attribute "error"
