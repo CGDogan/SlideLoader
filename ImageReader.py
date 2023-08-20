@@ -58,7 +58,9 @@ from OpenSlideReader import OpenSlideReader
 from BioFormatsReader import BioFormatsReader
 
 # Decreasing order of importance
-readers = [OpenSlideReader, BioFormatsReader]
+#readers = [OpenSlideReader, BioFormatsReader]
+readers = [BioFormatsReader]
+
 
 # Replaces the constructor of the abstract class
 # Usage:
