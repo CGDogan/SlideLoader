@@ -79,6 +79,7 @@ def ImageReader(imagepath):
     relevant_readers = []
     extension = imagepath.split(".")[-1].lower()
 
+    print("starting readers loop,", flush=True)
     for r in readers:
         if extension in r.extensions_set:
             relevant_readers.append(r)
@@ -89,6 +90,7 @@ def ImageReader(imagepath):
     image_type = []
     reader = None
     errors = []
+    print("starting relevant_readers loop,", flush=True)
     for r in relevant_readers:
         try:
             reader = r(imagepath)
