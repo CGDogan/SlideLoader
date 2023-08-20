@@ -3,7 +3,7 @@ import os
 import json
 import requests
 import sys
-from ImageReader import ImageReader
+import ImageReader
 
 import openslide
 
@@ -22,7 +22,7 @@ def getMetadata(filepath, extended, raise_exception):
         print(msg)
         return msg
     try:
-        reader = ImageReader(filepath)
+        reader = ImageReader.ImageReader(filepath)
     except BaseException as e:
         if raise_exception:
             raise e
