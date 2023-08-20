@@ -35,8 +35,10 @@ class BioFormatsReader(ImageReader.ImageReader):
         #self.__class__.l = threading.local()
         #self.__class__.l.a = X()
         global l
-        l.a = X("now")
-        dev_utils.ll = X("later?")
+        if not hasattr(l, 'a'):
+            l.a = X("now")
+        if not hasattr(dev_utils.ll, "u"):
+            dev_utils.ll.u = X("later?")
 
         print("__init__ called", flush=True)
         print("TrID instance:", flush=True)
