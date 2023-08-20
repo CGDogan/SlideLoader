@@ -149,7 +149,6 @@ class BioFormatsReader(ImageReader.ImageReader):
         print(ome_xml.images[0], flush=True)
         # "comment" attribute of metadata
         print(str(ome_xml.images[0]), flush=True)
-        print(str(ome_xml.instruments[0]), flush=True)
         print(str(ome_xml), flush=True)
         print("size")
         print(ome_xml.images[0].pixels.size_x, flush=True)
@@ -168,7 +167,6 @@ class BioFormatsReader(ImageReader.ImageReader):
         metadata['level_count'] = int(self._level_count)
         # TODO IA: fix maginification
         print("magnification:")
-        print(ome_xml.instruments[0], flush=True)
         try:
             metadata['objective'] = ome_xml.instruments[0].objectives[0].nominal_magnification
         except:
