@@ -124,9 +124,12 @@ class BioFormatsReader(ImageReader.ImageReader):
         except BaseException as e:
             raise OverflowError("XML metadata too large for file considering the preallocated buffer length. " + str(e))
         print(ome_xml, flush=True)
+        print("Starting metadata")
         # TODO try except here IA
         try:
             ome_xml = ome_types.from_xml(ome_xml)
+            print("continuing metadata")
+
         except BaseException as e:
             raise RuntimeError("get_basic_metadata: OME-XML parsing of metadata failed, error: " + \
                 str(e) + " when parsing: " + ome_xml)
