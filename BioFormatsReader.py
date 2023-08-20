@@ -139,20 +139,27 @@ class BioFormatsReader(ImageReader.ImageReader):
             raise RuntimeError("get_basic_metadata: OME-XML parsing of metadata failed, error: " + \
                 str(e) + " when parsing: " + ome_xml)
         ome_xml.images[0]
-        print("Here is our metadata:", flush=True)
         print(ome_xml.images[0], flush=True)
+        # "comment" attribute of metadata
         print(str(ome_xml.images[0]), flush=True)
+        print("size")
+        print(ome_xml.images[0].size_x, flush=True)
+        print(ome_xml.images[0].size_y, flush=True)
+        print(ome_xml.images[0].physical_size_x, flush=True)
+        print(ome_xml.images[0].physical_size_y, flush=True)
+        print(ome_xml.images[0].size_x, flush=True)
+        # TODO IA: continue and complete
+        # https://www.openmicroscopy.org/Schemas/Documentation/Generated/OME-2016-06/ome_xsd.html#Pixels_PhysicalSizeX
+        # https://bio-formats.readthedocs.io/en/latest/metadata-summary.html objective
+
 
         
 
         # TODO IA: import ome-xml, dump xml, save xml IA, 
-
+        # metadata['height']
+        # metadata['width']
         # metadata['mpp-x']
         # metadata['mpp-y']
-        # metadata['height']
-        #     or slideData.get("openslide.level[0].height", None)
-        # metadata['width']
-        #     or slideData.get( "openslide.level[0].width", None)
         # metadata['vendor']
         # metadata['level_count']
         # metadata['objective']
@@ -160,6 +167,8 @@ class BioFormatsReader(ImageReader.ImageReader):
         # metadata['comment']
         # metadata['study']
         # metadata['specimen']
+        if not hasattr(self, "_metadata"):
+            self._metadata = metadata
         return metadata
 
         
