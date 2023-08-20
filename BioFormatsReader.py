@@ -143,7 +143,7 @@ class BioFormatsReader(ImageReader.ImageReader):
         # "comment" attribute of metadata
         print(str(ome_xml.images[0]), flush=True)
         print("size")
-        print(ome_xml.images[0].size_x, flush=True)
+        print(ome_xml.images[0].pixels.size_x, flush=True)
         print(ome_xml.images[0].size_y, flush=True)
         print(ome_xml.images[0].physical_size_x, flush=True)
         print(ome_xml.images[0].physical_size_y, flush=True)
