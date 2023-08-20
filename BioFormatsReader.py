@@ -14,8 +14,10 @@ bfthread_holder = threading.local()
 # todo deleteme 
 import threading
 class X:
+    def __init__(self, s):
+        self.x = s
     def __del__(self):
-        print("dying thread", flush=True)
+        print("dying thread " + self.x, flush=True)
 
 l = threading.local()
 
@@ -33,8 +35,8 @@ class BioFormatsReader(ImageReader.ImageReader):
         #self.__class__.l = threading.local()
         #self.__class__.l.a = X()
         global l
-        l.a = X()
-        dev_utils.ll = X()
+        l.a = X("now")
+        dev_utils.ll = X("later?")
 
         print("__init__ called", flush=True)
         print("TrID instance:", flush=True)
