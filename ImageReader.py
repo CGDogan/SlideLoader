@@ -108,5 +108,5 @@ def construct_reader(imagepath):
             errors.append(r.reader_name() + ": " + str(e))
             continue
     if reader is None:
-        raise RuntimeError({"type": image_type.join(","), "error": errors.join(", ")})
+        raise RuntimeError({"type": ",".join(image_type), "error": ",".join(errors)})
     return reader
