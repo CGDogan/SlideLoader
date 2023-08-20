@@ -131,6 +131,9 @@ class BioFormatsReader(ImageReader.ImageReader):
             raise OverflowError("XML metadata too large for file considering the preallocated buffer length. " + str(e))
         print(ome_xml_raw, flush=True)
         print("Starting metadata", flush=True)
+        print("raw_str:")
+        print(type(ome_xml_raw))
+        print(ome_xml_raw)
         # TODO try except here IA
         try:
             ome_xml = ome_types.from_xml(ome_xml_raw)
