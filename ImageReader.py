@@ -7,15 +7,15 @@ from abc import ABCMeta, abstractmethod
 # Allow near drop-in replacements for OpenSlide-Python
 class ImageReader(metaclass=ABCMeta):
     # currently: "openslide", "bioformats"
-    #@property
-    #@abstractmethod
-    #def reader_name(self):
-    #    return None
+    @staticmethod
+    @abstractmethod
+    def reader_name(self):
+        pass
     
-    #@property
-    #@abstractmethod
-    #def extensions_set(self):
-    #    pass
+    @staticmethod
+    @abstractmethod
+    def extensions_set(self):
+        pass
     
     # Raises exception on error
     @abstractmethod

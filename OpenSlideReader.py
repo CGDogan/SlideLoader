@@ -4,11 +4,11 @@ import dev_utils
 from file_extensions import OPENSLIDE_EXTENSIONS
 
 class OpenSlideReader(ImageReader.ImageReader):
-    @property
+    @staticmethod
     def reader_name(self):
         return "openslide"
 
-    @property
+    @staticmethod
     def extensions_set(self):
         return OPENSLIDE_EXTENSIONS
 
