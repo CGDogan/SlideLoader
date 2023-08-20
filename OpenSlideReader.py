@@ -45,10 +45,10 @@ class OpenSlideReader(ImageReader.ImageReader):
             metadata = {k:v for (k,v) in slideData.items()}
         else:
             metadata = {}
-            metadata['height'] = slideData.get(openslide.PROPERTY_NAME_BOUNDS_HEIGHT, None) \
-                or slideData.get("openslide.level[0].height", None)
             metadata['width'] = slideData.get(openslide.PROPERTY_NAME_BOUNDS_WIDTH, None) \
                 or slideData.get( "openslide.level[0].width", None)
+            metadata['height'] = slideData.get(openslide.PROPERTY_NAME_BOUNDS_HEIGHT, None) \
+                or slideData.get("openslide.level[0].height", None)
             metadata['mpp-x'] = slideData.get(openslide.PROPERTY_NAME_MPP_X, None)
             metadata['mpp-y'] = slideData.get(openslide.PROPERTY_NAME_MPP_Y, None)
             metadata['vendor'] = slideData.get(openslide.PROPERTY_NAME_VENDOR, None)

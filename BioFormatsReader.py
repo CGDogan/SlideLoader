@@ -125,14 +125,14 @@ class BioFormatsReader(ImageReader.ImageReader):
             self._md5 = dev_utils.file_md5(self._image_path)
 
         try:
-            ome_xml = self._bfreader.dump_ome_xml_metadata()
+            ome_xml_raw = self._bfreader.dump_ome_xml_metadata()
         except BaseException as e:
             raise OverflowError("XML metadata too large for file considering the preallocated buffer length. " + str(e))
-        print(ome_xml, flush=True)
+        print(ome_xml_raw, flush=True)
         print("Starting metadata", flush=True)
         # TODO try except here IA
         try:
-            ome_xml = ome_types.from_xml(ome_xml)
+            ome_xml = ome_types.from_xml(ome_xml_raw)
             print("continuing metadata", flush=True)
 
         except BaseException as e:
@@ -163,16 +163,15 @@ class BioFormatsReader(ImageReader.ImageReader):
         print("magnification:")
         print(ome_xml.instruments[0], flush=True)
         try:
-            metadata['objective'] = ome_xml.instruments[0].nominal_magnification
+            metadata['objective'] = ome_xml.instruments[0].objectives[0].nominal_magnification
         except:
             try:
-                metadata['objective'] = ome_xml.instruments[0].calibrated_magnification
+                metadata['objective'] = ome_xml.instruments[0].objectives[0].calibrated_magnification
             except:
                 metadata['objective'] = -1.0
-        # TODO: need to completely expand XML IA
-        metadata['comment'] = 0
+        metadata['comment'] = ome_xml_raw
         metadata['study'] = ""
-        metadata['speciment'] = ""
+        metadata['specimen'] = ""
         metadata['md5sum'] = self._md5
 
         
