@@ -20,12 +20,12 @@ class X:
 l = threading.local()
 
 class BioFormatsReader(ImageReader.ImageReader):
-    @property
-    def reader_name(self):
+    @staticmethod
+    def reader_name():
         return "bioformats"
 
-    @property
-    def extensions_set(self):
+    @staticmethod
+    def extensions_set():
         return BIOFORMATS_EXTENSIONS
 
     # Pick the reader

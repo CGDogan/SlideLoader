@@ -5,11 +5,11 @@ from file_extensions import OPENSLIDE_EXTENSIONS
 
 class OpenSlideReader(ImageReader.ImageReader):
     @staticmethod
-    def reader_name(self):
+    def reader_name():
         return "openslide"
 
     @staticmethod
-    def extensions_set(self):
+    def extensions_set():
         return OPENSLIDE_EXTENSIONS
 
     # Pick the reader

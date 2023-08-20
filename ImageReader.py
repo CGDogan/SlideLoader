@@ -9,12 +9,12 @@ class ImageReader(metaclass=ABCMeta):
     # currently: "openslide", "bioformats"
     @staticmethod
     @abstractmethod
-    def reader_name(self):
+    def reader_name():
         pass
     
     @staticmethod
     @abstractmethod
-    def extensions_set(self):
+    def extensions_set():
         pass
     
     # Raises exception on error
