@@ -85,6 +85,7 @@ class BioFormatsReader(ImageReader.ImageReader):
         if code < 0:
             raise IOError("Could not open file " + imagepath + ": " + self._bfreader.get_error_string())
         print("__init__ called3", flush=True)
+        self._vendor = self._bfreader.get_format()
         self._level_count = self._bfreader.get_resolution_count()
         self._dimensions = (self._bfreader.get_size_x(), self._bfreader.get_size_y())
         self._level_dimensions = [self._dimensions]
@@ -122,9 +123,6 @@ class BioFormatsReader(ImageReader.ImageReader):
         metadata = {}
         if not hasattr(self, "_md5"):
             self._md5 = dev_utils.file_md5(self._image_path)
-        metadata['md5sum'] = self._md5
-        metadata['width'] = self._dimensions[0]
-        metadata['height'] = self._dimensions[0]
 
         try:
             ome_xml = self._bfreader.dump_ome_xml_metadata()
@@ -143,13 +141,25 @@ class BioFormatsReader(ImageReader.ImageReader):
         ome_xml.images[0]
         print(ome_xml.images[0], flush=True)
         # "comment" attribute of metadata
-        print(str(ome_xml.images[0]), flush=True)
+        print(str(ome_xml), flush=True)
         print("size")
         print(ome_xml.images[0].pixels.size_x, flush=True)
         print(ome_xml.images[0].pixels.size_y, flush=True)
         print(ome_xml.images[0].pixels.physical_size_x, flush=True)
         print(ome_xml.images[0].pixels.physical_size_y, flush=True)
-        print(ome_xml.images[0].size_x, flush=True)
+        metadata['md5sum'] = self._md5
+        metadata['width'] = str(self._dimensions[0])
+        metadata['height'] = str(self._dimensions[1])
+        try:
+            metadata['mpp-x'] = str(ome_xml.images[0].pixels.physical_size_x)
+            metadata['mpp-y'] = str(ome_xml.images[0].pixels.physical_size_y)
+        except BaseException as e:
+            metadata['mpp-x'] = "0"
+            metadata['mpp-y'] = "0"
+        metadata['vendor'] = self._vendor
+        metadata['level_count'] = int(self._level_count)
+        metadata['objective'] = ome_xml.instruments[0]
+        
         # TODO IA: continue and complete
         # https://www.openmicroscopy.org/Schemas/Documentation/Generated/OME-2016-06/ome_xsd.html#Pixels_PhysicalSizeX
         # https://bio-formats.readthedocs.io/en/latest/metadata-summary.html objective
