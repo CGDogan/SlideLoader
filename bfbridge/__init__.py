@@ -361,11 +361,11 @@ class BFBridgeInstance:
     def is_false_color(self):
         return self.__boolean(lib.bf_is_false_color(self.bfbridge_instance, self.bfbridge_thread))
     
-    # TODO return a 2D array
+    # TODO return a 2D array, handle sign depending on pixel type
     def get_8_bit_lookup_table(self):
         return self.__return_from_buffer(lib.bf_get_8_bit_lookup_table(self.bfbridge_instance, self.bfbridge_thread), False)
     
-    # TODO return a 2D array
+    # TODO return a 2D array, handle endianness, handle sign depending on pixel type
     def get_16_bit_lookup_table(self):
         return self.__return_from_buffer(lib.bf_get_8_bit_lookup_table(self.bfbridge_instance, self.bfbridge_thread), False)
     
