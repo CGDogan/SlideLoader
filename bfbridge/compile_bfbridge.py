@@ -1,5 +1,3 @@
-# TODO: wrap me in __main__ hopefully and try calling C
-
 from cffi import FFI
 from pathlib import Path
 import sys
