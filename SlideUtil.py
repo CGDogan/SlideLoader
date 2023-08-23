@@ -1,9 +1,9 @@
 import csv
-import subprocess
+import os
 import time
 from multiprocessing.pool import ThreadPool
 
-import openslide
+from image_reader import construct_reader
 
 from dev_utils import getMetadata
 from dev_utils import postslide
@@ -34,6 +34,10 @@ def gen_thumbnail(filename, slide, size, imgtype="png"):
 
 
 def openslidedata(metadata):
+    if not os.path.isfile(metadata['location']):
+        raise IOError("No such file")
+    
+    slide = construct_reader(metadata['location'])
     metadata_retrieved = getMetadata(metadata['location'], False, True)
     for k, v in metadata_retrieved.items():
         if k not in metadata:
@@ -41,7 +45,6 @@ def openslidedata(metadata):
     metadata['timestamp'] = time.time()
     thumbnail_size = config.get('thumbnail_size', None)
     if thumbnail_size:
-        slide = openslide.OpenSlide(metadata['location'])
         gen_thumbnail(metadata['location'], slide, thumbnail_size)
     return metadata
 

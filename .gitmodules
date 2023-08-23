@@ -1,0 +1,3 @@
+[submodule "BFBridge"]
+	path = BFBridge
+	url = https://github.com/camicroscope/BFBridge
