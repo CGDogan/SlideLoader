@@ -1,5 +1,5 @@
 import image_reader
-import bfbridge
+import BFBridge.python as bfbridge
 import dev_utils
 import ome_types
 from file_extensions import BIOFORMATS_EXTENSIONS
