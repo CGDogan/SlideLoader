@@ -6,6 +6,8 @@ RUN apt-get -q update --fix-missing
 RUN apt-get -q install -y python3-pip openslide-tools python3-openslide vim openssl
 RUN apt-get -q install -y openssl libcurl4-openssl-dev libssl-dev
 
+### Install libvips
+
 # Tony has a future use case where we may adapt caMic to GIS visualization
 # install libvips-dev for pyvips. No need for libvips.
 RUN apt-get -q install -y libvips-dev
@@ -58,6 +60,16 @@ RUN ! python3 -c "import pyvips; pyvips.Image.openslideload(('CMU-1-Small-Region
 # but if you do LD_LIBRARY_PATH="${LD_LIBRARY_PATH_ORIG}" python a.py
 # or likewise using docker ENV command or os.environ in python before
 # importing, this will remove the no-openslide libvips from path.
+
+### Install BioFormats wrapper
+
+WORKDIR /root/src/bfbridge/python
+
+RUN ls
+RUN python3 setup_test_bfbridge.py
+RUN x
+
+### Set up the server
 
 WORKDIR /root/src/
 
