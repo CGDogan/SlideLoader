@@ -66,6 +66,7 @@ RUN ! python3 -c "import pyvips; pyvips.Image.openslideload(('CMU-1-Small-Region
 WORKDIR /root/src/bfbridge/python
 
 RUN ls
+RUN ls ../c/
 RUN python3 compile_bfbridge.py
 
 ### Set up the server
