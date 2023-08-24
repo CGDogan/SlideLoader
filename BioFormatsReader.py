@@ -1,8 +1,14 @@
 import image_reader
-import BFBridge.python as bfbridge
 import dev_utils
 import ome_types
 from file_extensions import BIOFORMATS_EXTENSIONS
+
+try:
+    # Docker-copied
+    import bfbridge.python as bfbridge
+except:
+    # Git submodule
+    import BFBridge.python as bfbridge
 
 jvm = bfbridge.BFBridgeVM()
 
