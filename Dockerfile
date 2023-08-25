@@ -87,8 +87,6 @@ RUN mkdir -p /images/uploading
 COPY requirements.txt .
 RUN pip3 install -r requirements.txt --break-system-packages
 
-COPY logging_level.properties /usr/lib/java/simplelogger.properties
-
 RUN ls -a
 RUN apt install file
 RUN file *
