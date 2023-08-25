@@ -79,6 +79,9 @@ run openssl version -a
 
 ENV FLASK_DEBUG True
 
+# SimpleLogger documentation: "trace", "debug", "info", "warn", "error" or "off"
+ENV BFBRIDGE_LOGLEVEL warn
+
 RUN mkdir -p /images/uploading
 
 COPY requirements.txt .
