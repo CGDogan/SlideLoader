@@ -84,7 +84,9 @@ RUN mkdir -p /images/uploading
 COPY requirements.txt .
 RUN pip3 install -r requirements.txt --break-system-packages
 
+RUN ls
 COPY ./ ./
+RUN ls
 RUN cp test_imgs/* /images/
 
 EXPOSE 4000
