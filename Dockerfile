@@ -80,7 +80,7 @@ run openssl version -a
 ENV FLASK_DEBUG True
 
 # SimpleLogger documentation: "trace", "debug", "info", "warn", "error" or "off"
-ENV BFBRIDGE_LOGLEVEL warn
+ENV _JAVA_OPTIONS=-Dorg.slf4j.simpleLogger.defaultLogLevel warn
 
 RUN mkdir -p /images/uploading
 
