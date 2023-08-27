@@ -1,4 +1,4 @@
-FROM ghcr.io/camicroscope/image-decoders:main
+FROM image-decoders
 
 WORKDIR /var/www
 RUN apt-get update
