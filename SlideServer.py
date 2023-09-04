@@ -655,5 +655,5 @@ def guiLocation():
     # if ui_hostname is not None:
     #     res["ui_hostname"] = ui_hostname
 
-    success = port in res and ui_port in res
+    success = "port" in res and "ui_port" in res
     return flask.Response(json.dumps(res), status=200 if success else 500, mimetype='text/json')
