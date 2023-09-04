@@ -638,12 +638,12 @@ def guiLocation():
     ui_hostname = os.getenv("DICOM_UI_HOSTNAME")
     res = {}
     if port is not None:
-        res.port = int(port)
+        res["port"] = int(port)
     else:
         print("DICOM_PORT env variable not found")
 
     if ui_port is not None:
-        res.ui_port = int(ui_port)
+        res["ui_port"] = int(ui_port)
     else:
         print("DICOM_UI_PORT env variable not found")
 
@@ -651,9 +651,9 @@ def guiLocation():
     # If the DICOM server is on a different computer, this can be uncommented,
     # the frontend will parse this, but it's better to keep this in a comment against env var poisoning
     # if hostname is not None:
-    #     res.hostname = hostname
+    #     res["hostname"] = hostname
     # if ui_hostname is not None:
-    #     res.ui_hostname = ui_hostname
+    #     res["ui_hostname"] = ui_hostname
 
     success = port in res and ui_port in res
     return flask.Response(json.dumps(res), status=200 if success else 500, mimetype='text/json')
