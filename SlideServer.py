@@ -629,3 +629,31 @@ def checkDownloadStatus():
         return flask.Response(json.dumps({"downloadDone": True}), status=200, mimetype='text/json')
     return flask.Response(json.dumps({"downloadDone": False}), status=200, mimetype='text/json')
 
+# DICOM Explorer UI and DICOM server hostname and port
+@app.route('/dicomsrv/location', methods=['GET'])
+def guiLocation():
+    port = os.getenv("DICOM_PORT")
+    hostname = os.getenv("DICOM_HOSTNAME")
+    ui_port = os.getenv("DICOM_UI_PORT")
+    ui_hostname = os.getenv("DICOM_UI_HOSTNAME")
+    res = {}
+    if port is not None:
+        res.port = int(port)
+    else:
+        print("DICOM_PORT env variable not found")
+
+    if ui_port is not None:
+        res.ui_port = int(ui_port)
+    else:
+        print("DICOM_UI_PORT env variable not found")
+
+
+    # If the DICOM server is on a different computer, this can be uncommented,
+    # the frontend will parse this, but it's better to keep this in a comment against env var poisoning
+    # if hostname is not None:
+    #     res.hostname = hostname
+    # if ui_hostname is not None:
+    #     res.ui_hostname = ui_hostname
+
+    success = port in res and ui_port in res
+    return flask.Response(json.dumps(res), status=200 if success else 500, mimetype='text/json')
