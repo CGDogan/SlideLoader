@@ -171,26 +171,26 @@ def finish_upload(token):
     if not body:
         return flask.Response(json.dumps({"error": "Missing JSON body"}), status=400, mimetype='text/json')
     token = secure_filename(token)
+    tmppath = os.path.join(app.config['TEMP_FOLDER'], token)
+    if not os.path.isfile(tmppath):
+        return flask.Response(json.dumps({"error": "Token Not Recognised"}), status=400, mimetype='text/json')
+
     filename = body['filename']
     if filename and verify_extension(filename):
         filename = secure_filename_strict(filename)
-        foldername = suggest_folder_name(filename)
+        foldername = suggest_folder_name(tmppath)
         if foldername != "":
             relpath = foldername + os.sep + filename
         else:
             relpath = filename
         filepath = os.path.join(app.config['UPLOAD_FOLDER'], relpath)
-        tmppath = os.path.join(app.config['TEMP_FOLDER'], token)
         if not os.path.isfile(filepath):
-            if os.path.isfile(tmppath):
-                shutil.move(tmppath, filepath)
-                # "filename": relpath so that the full relative path is entered to the database
-                # and for the next requests to SlideLoader
-                return flask.Response(json.dumps({"ended": token, "filepath": filepath, "filename": relpath}), status=200, mimetype='text/json')
-            else:
-                return flask.Response(json.dumps({"error": "Token Not Recognised"}), status=400, mimetype='text/json')
+            shutil.move(tmppath, filepath)
+            # "filename" is relpath so that the full relative path is entered to the database correctly
+            # and for the next requests to SlideLoader
+            return flask.Response(json.dumps({"ended": token, "filepath": filepath, "filename": relpath}), status=200, mimetype='text/json')
         else:
-            # "filename": filename for displaying as the user chose
+            # "filename" is filename for displaying exactly as the user chose but sanitized
             return flask.Response(json.dumps({"error": "File with name '" + filename + "' already exists", "filepath": filepath, "filename": filename}), status=400, mimetype='text/json')
 
     else:
