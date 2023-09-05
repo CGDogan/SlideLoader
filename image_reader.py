@@ -100,6 +100,7 @@ dicom_extensions = set(["dcm", "dic", "dicom"])
 def suggest_folder_name(filepath):
     try:
         print("starting", flush=True)
+        print(filepath)
         print(filepath.rsplit('.', 1)[1] in dicom_extensions, flush=True)
         print(filepath.rsplit('.', 1)[1], flush=True)
 
