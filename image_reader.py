@@ -101,14 +101,22 @@ def suggest_folder_name(filepath):
     try:
         print("starting", flush=True)
         if filepath.rsplit('.', 1)[1] in dicom_extensions:
+            print("c1", flush=True)
+
             # For dicom, use base conversion to efficiently store two UIDs merged.
             # This algorithm is arbitrary
             ds = dcmread(filepath)
+            print("c2", flush=True)
+
             study_instance_uid = ds[0x0020,0x000D].repval
             series_instance_uid = ds[0x0020,0x000E].repval
+            print("c3", flush=True)
+
             uid = study_instance_uid + ".." + series_instance_uid
             summary = 0
             arr_len = len(uid)
+            print("c4", flush=True)
+
             for i in range(arr_len):
                 c = uid[i]
                 if c == '.':
@@ -117,7 +125,11 @@ def suggest_folder_name(filepath):
                     c = int(c)
                 summary *= 11
                 summary += c
+            print("c5", flush=True)
+
             summary = base64.urlsafe_b64encode(summary).replace("=", "")
+            print("c6", flush=True)
+
             # make it a byte array
             summary = bytes.fromhex(hex(summary)[2:])
             print("ending", flush=True)
