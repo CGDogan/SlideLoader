@@ -143,7 +143,7 @@ def suggest_folder_name(filepath, extension):
             summary = base64.urlsafe_b64encode(summary).decode("ascii").replace("=", "")
             print("c6", flush=True)
             print("ending", flush=True)
-            return base64.urlsafe_b64encode(summary)
+            return summary
         return ""
     except BaseException as e:
         print(e)
