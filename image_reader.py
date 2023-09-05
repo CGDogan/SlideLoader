@@ -129,13 +129,13 @@ def suggest_folder_name(filepath, extension):
                     c = int(c)
                 summary *= 11
                 summary += c
-            print("c5", flush=True)
-
-            summary = base64.urlsafe_b64encode(summary).replace("=", "")
-            print("c6", flush=True)
+            print("c4.5", flush=True)
 
             # make it a byte array
             summary = bytes.fromhex(hex(summary)[2:])
+            print("c5", flush=True)
+            summary = base64.urlsafe_b64encode(summary).replace("=", "")
+            print("c6", flush=True)
             print("ending", flush=True)
             return base64.urlsafe_b64encode(summary)
         return ""
