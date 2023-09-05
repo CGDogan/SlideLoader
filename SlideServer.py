@@ -13,7 +13,7 @@ import urllib
 import flask
 import flask_cors
 from flask import request
-from image_reader import construct_reader
+from image_reader import construct_reader, suggest_folder_name
 from werkzeug.utils import secure_filename
 import dev_utils
 import requests
@@ -174,16 +174,24 @@ def finish_upload(token):
     filename = body['filename']
     if filename and verify_extension(filename):
         filename = secure_filename_strict(filename)
-        filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+        foldername = suggest_folder_name(filename)
+        if foldername != "":
+            relpath = foldername + os.sep + filename
+        else:
+            relpath = filename
+        filepath = os.path.join(app.config['UPLOAD_FOLDER'], relpath)
         tmppath = os.path.join(app.config['TEMP_FOLDER'], token)
         if not os.path.isfile(filepath):
             if os.path.isfile(tmppath):
                 shutil.move(tmppath, filepath)
-                return flask.Response(json.dumps({"ended": token, "filepath": filepath}), status=200, mimetype='text/json')
+                # "filename": relpath so that the full relative path is entered to the database
+                # and for the next requests to SlideLoader
+                return flask.Response(json.dumps({"ended": token, "filepath": filepath, "filename": relpath}), status=200, mimetype='text/json')
             else:
                 return flask.Response(json.dumps({"error": "Token Not Recognised"}), status=400, mimetype='text/json')
         else:
-            return flask.Response(json.dumps({"error": "File with name '" + filename + "' already exists", "filepath": filepath}), status=400, mimetype='text/json')
+            # "filename": filename for displaying as the user chose
+            return flask.Response(json.dumps({"error": "File with name '" + filename + "' already exists", "filepath": filepath, "filename": filename}), status=400, mimetype='text/json')
 
     else:
         return flask.Response(json.dumps({"error": "Invalid filename"}), status=400, mimetype='text/json')
