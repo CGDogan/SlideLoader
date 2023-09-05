@@ -64,13 +64,52 @@ def secure_filename_strict(filename):
         split_filename = ["noname", split_filename[-1]]
     return '.'.join(split_filename)
 
-def allowed_file(filename):
-    return '.' in filename and \
-           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+def verify_extension(filepath):
+    return '.' in filepath and \
+           filepath.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+# We would like to allow access to files in subdirectories.
+# The frontend accesses with the full file path from Mongo. For Mongo and iipsrv, the frontend
+# uses the full file path which caMicroscope currently does not sanitize.
+# For SlideLoader, which uses Rest API and would be confused by subdirectories,
+# "relpath_s" is an escaped filepath format ('/' replaced by '=') that counts as always one
+# entity in Rest URLs. It does not allow '..' and cannot start with '=' ('/').
+#
+# As a summary, the frontend used to deal with:
+#  Full paths such as /images/abc.jpg: These are as stored in MongoDB and as iipsrv understands
+#  Filenames such as abc.jpg: Entered by the user, then shown again on screen with special chars removed
+# Now it also deals with:
+#  relpath_s such as folder1=abc.jpg: relative paths with substituted '/'
+#
+# relpath_s are near-drop-in replacements for filenames in URLs where one might want to 
+# access a subfolder (in short, replacing filenames completely except for naming new files,
+# since SlideLoader would like to assign a directory if needed).
+# Please remember to use sanitize_unescape_relpath_s on receiving relpath
+# and escape_relpath on sending relpath.
+# "filepath" in SlideServer.py is the absolute path mentioned above.
+#
+# Watch out for:
+# os.path.join(dir, relpath_s) <-- should have used relpath
+# secure_filename(relpath[_s]) <-- sanitize_unescape_relpath_s was enough
+def sanitize_unescape_relpath_s(relpath_s):
+    if relpath_s[0] == '=':
+        raise ValueError("Filepath starts from the root directory which is forbidden")
+    if "==" in relpath_s:
+        raise ValueError("Filepath contains '//' which is forbidden")
+    if ".." in relpath_s:
+        raise ValueError("Filepath contains '..' which is forbidden")
+    return relpath_s.replace("=", os.sep)
+
+#relpath must be relative such as "./abc/x" or "abc/x"
+def escape_relpath(relpath):
+    if relpath[0] == os.sep:
+        raise ValueError("Filepath begins with '/'")
+    if ".." in relpath:
+        raise ValueError("Filepath contains '..' which is forbidden")
+    return relpath.replace(os.sep, "=")
 
 
-def getThumbnail(filename, size=50):
-    filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+def getThumbnail(filepath, size=50):
     if not os.path.isfile(filepath):
         return {"error": "No such file"}
     try:
@@ -88,16 +127,18 @@ def getThumbnail(filename, size=50):
     except BaseException as e:
         return {"type": slide.reader_name(), "error": str(e)}
 
-@app.route('/slide/<filename>/pyramid/<dest>', methods=['POST'])
-def makePyramid(filename, dest):
+@app.route('/slide/<source>/pyramid/<dest>', methods=['POST'])
+def makePyramid(source, dest):
+    relpath_source = sanitize_unescape_relpath_s(source)
+    relpath_dest = sanitize_unescape_relpath_s(dest)
     try:
-        filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-        destpath = os.path.join(app.config['UPLOAD_FOLDER'], dest)
+        filepath = os.path.join(app.config['UPLOAD_FOLDER'], relpath_source)
+        destpath = os.path.join(app.config['UPLOAD_FOLDER'], relpath_dest)
         savedImg = pyvips.Image.new_from_file(filepath, access='sequential').tiffsave(destpath, tile=True, compression="lzw", tile_width=256, tile_height=256, pyramid=True, bigtiff=True, xres=0.254, yres=0.254)
         while not os.path.exists(filepath):
             os.sync()
             sleep(750)
-        return flask.Response(json.dumps({"status": "OK", "srcFile":filename, "destFile":dest, "details":savedImg}), status=200, mimetype='text/json')
+        return flask.Response(json.dumps({"status": "OK", "srcFile":source, "destFile":dest, "details":savedImg}), status=200, mimetype='text/json')
     except BaseException as e:
         return flask.Response(json.dumps({"type": "pyvips", "error": str(e)}), status=500, mimetype='text/json')
 
@@ -156,14 +197,16 @@ def finish_upload(token):
         return flask.Response(json.dumps({"error": "Missing JSON body"}), status=400, mimetype='text/json')
     token = secure_filename(token)
     filename = body['filename']
-    if filename and allowed_file(filename):
+    if filename and verify_extension(filename):
         filename = secure_filename_strict(filename)
-        filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+        relpath = filename
+        filepath = os.path.join(app.config['UPLOAD_FOLDER'], relpath)
         tmppath = os.path.join(app.config['TEMP_FOLDER'], token)
         if not os.path.isfile(filepath):
             if os.path.isfile(tmppath):
                 shutil.move(tmppath, filepath)
-                return flask.Response(json.dumps({"ended": token, "filepath": filepath}), status=200, mimetype='text/json')
+                relpath_s = escape_relpath(relpath)
+                return flask.Response(json.dumps({"ended": token, "filepath": filepath, "relpath_s": relpath_s}), status=200, mimetype='text/json')
             else:
                 return flask.Response(json.dumps({"error": "Token Not Recognised"}), status=400, mimetype='text/json')
         else:
@@ -182,20 +225,21 @@ def slide_delete():
     body = flask.request.get_json()
 
     if not body:
-        return flask.Response(json.dumps({"error": "Missing JSON body"}), status=400, mimetype='text/json')
-        
-    filename = body['filename']
-    if filename and allowed_file(filename):
-        filename = secure_filename(filename)
-        filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-        if os.path.isfile(filepath):
-            os.remove(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            return flask.Response(json.dumps({"deleted": filename, "success": True}), mimetype='text/json') 
-        else:
-            return flask.Response(json.dumps({"error": "File with name '" + filename + "' does not exist"}), status=400, mimetype='text/json')
+        return flask.Response(json.dumps({"error": "Missing JSON body"}), status=400, mimetype='text/json')        
+    if 'filename' not in body:
+        return flask.Response(json.dumps({"error": "Missing filename"}), status=400, mimetype='text/json')
+    relpath_s = body['filename']
+    relpath = sanitize_unescape_relpath_s(relpath_s)
 
-    else:
+    if not verify_extension(relpath):
         return flask.Response(json.dumps({"error": "Invalid filename"}), status=400, mimetype='text/json')
+
+    filepath = os.path.join(app.config['UPLOAD_FOLDER'], relpath)
+    if os.path.isfile(filepath):
+        os.remove(filepath)
+        return flask.Response(json.dumps({"deleted": relpath_s, "success": True}), mimetype='text/json') 
+    else:
+        return flask.Response(json.dumps({"error": "File with name '" + relpath_s + "' does not exist"}), status=400, mimetype='text/json')
 
     # check for file if it exists or not
     # delete the file
@@ -205,20 +249,24 @@ def testRoute():
     return '{"Status":"up"}'
 
 
-@app.route("/data/one/<filepath>", methods=['GET'])
-def singleSlide(filepath):
+@app.route("/data/one/<filename>", methods=['GET'])
+def singleSlide(filename):
+    relpath = sanitize_unescape_relpath_s(filename)
     extended = request.args.get('extended')
-    res = dev_utils.getMetadata(os.path.join(app.config['UPLOAD_FOLDER'], filepath), extended, False)
+    res = dev_utils.getMetadata(os.path.join(app.config['UPLOAD_FOLDER'], relpath), extended, False)
+    res["relpath_s"] = filename
     if (hasattr(res, 'error')):
         return flask.Response(json.dumps(res), status=500, mimetype='text/json')
     else:
         return flask.Response(json.dumps(res), status=200, mimetype='text/json')
 
 
-@app.route("/data/thumbnail/<filepath>", methods=['GET'])
-def singleThumb(filepath):
+@app.route("/data/thumbnail/<filename>", methods=['GET'])
+def singleThumb(filename):
+    relpath = sanitize_unescape_relpath_s(filename)
     size = flask.request.args.get('size', default=50, type=int)
     size = min(500, size)
+    filepath = os.path.join(app.config['UPLOAD_FOLDER'], relpath)
     res = getThumbnail(filepath, size)
     if (hasattr(res, 'error')):
         return flask.Response(json.dumps(res), status=500, mimetype='text/json')
@@ -226,12 +274,17 @@ def singleThumb(filepath):
         return flask.Response(json.dumps(res), status=200, mimetype='text/json')
 
 
-@app.route("/data/many/<filepathlist>", methods=['GET'])
-def multiSlide(filepathlist):
+@app.route("/data/many/<filenamelist>", methods=['GET'])
+def multiSlide(filenamelist):
     extended = request.args.get('extended')
-    filenames = json.loads(filepathlist)
-    paths = [os.path.join(app.config['UPLOAD_FOLDER'], filename) for filename in filenames]
+    filenames = json.loads(filenamelist)
+    paths = [ \
+        os.path.join(app.config['UPLOAD_FOLDER'], sanitize_unescape_relpath_s(filename)) \
+        for filename in filenames]
     res = dev_utils.getMetadataList(paths, extended, False)
+    for m in res:
+        # TODO IA continue from here
+        m[]
     if (hasattr(res, 'error')):
         return flask.Response(json.dumps(res), status=500, mimetype='text/json')
     else:
