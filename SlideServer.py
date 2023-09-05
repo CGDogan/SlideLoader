@@ -186,13 +186,11 @@ def finish_upload(token):
         filepath = os.path.join(app.config['UPLOAD_FOLDER'], relpath)
         if not os.path.isfile(filepath):
             shutil.move(tmppath, filepath)
-            # "filename" is relpath so that the full relative path is entered to the database correctly
-            # and for the next requests to SlideLoader
-            return flask.Response(json.dumps({"ended": token, "filepath": filepath, "filename": relpath}), status=200, mimetype='text/json')
+            return flask.Response(json.dumps({"ended": token, "filepath": filepath, "filename": filename, "relpath": relpath}), status=200, mimetype='text/json')
         else:
-            # "filename" is filename for displaying exactly as the user chose but sanitized
             return flask.Response(json.dumps({"error": "File with name '" + filename + "' already exists", "filepath": filepath, "filename": filename}), status=400, mimetype='text/json')
-
+        # The above return "filename" to show the user the sanitized filename
+        # and on success, return relpath for subsequent SlideLoader calls by the frontend.
     else:
         return flask.Response(json.dumps({"error": "Invalid filename"}), status=400, mimetype='text/json')
 
