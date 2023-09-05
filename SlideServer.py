@@ -180,7 +180,10 @@ def finish_upload(token):
         filename = secure_filename_strict(filename)
         foldername = suggest_folder_name(tmppath, filename.rsplit('.', 1)[1])
         if foldername != "":
-            relpath = foldername + os.sep + filename
+            folderpath = os.path.join(app.config['UPLOAD_FOLDER'], foldername)
+            if not os.path.isdir(folderpath):
+                os.mkdir(folderpath)
+            relpath = os.path.join(foldername, filename)
         else:
             relpath = filename
         filepath = os.path.join(app.config['UPLOAD_FOLDER'], relpath)
@@ -262,7 +265,7 @@ def multiSlide(filepathlist):
 
 @app.route("/getSlide/<image_name>")
 def getSlide(image_name):
-    if(os.path.isfile("/images/"+image_name)):
+    if(os.path.isfile(os.path.join(app.config['UPLOAD_FOLDER'], image_name))):
         return flask.send_from_directory(app.config["UPLOAD_FOLDER"], image_name, as_attachment=True)
     else:
         return flask.Response(json.dumps({"error": "File does not exist"}), status=404, mimetype='text/json')
