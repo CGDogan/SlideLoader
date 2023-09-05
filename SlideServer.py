@@ -64,10 +64,26 @@ def secure_filename_strict(filename):
         split_filename = ["noname", split_filename[-1]]
     return '.'.join(split_filename)
 
-def allowed_file(filename):
+def verify_extension(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
+def secure_relative_path(filename):
+    if filename[0] == os.sep:
+        raise ValueError("Filepath starts from the root directory which is forbidden")
+    if os.sep + os.sep in filename:
+        raise ValueError("Filepath contains '//' which is forbidden")
+    if ".." in filename:
+        raise ValueError("Filepath contains '..' which is forbidden")
+    level_names = filename.split(os.sep)
+    filename = ""
+    for name in level_names:
+        name = secure_filename(name)
+        if len(name) == 0:
+            name = "noname"
+        filename += name
+        filename += os.sep
+    return filename[:-1]
 
 def getThumbnail(filename, size=50):
     filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
@@ -156,7 +172,7 @@ def finish_upload(token):
         return flask.Response(json.dumps({"error": "Missing JSON body"}), status=400, mimetype='text/json')
     token = secure_filename(token)
     filename = body['filename']
-    if filename and allowed_file(filename):
+    if filename and verify_extension(filename):
         filename = secure_filename_strict(filename)
         filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
         tmppath = os.path.join(app.config['TEMP_FOLDER'], token)
@@ -185,8 +201,8 @@ def slide_delete():
         return flask.Response(json.dumps({"error": "Missing JSON body"}), status=400, mimetype='text/json')
         
     filename = body['filename']
-    if filename and allowed_file(filename):
-        filename = secure_filename(filename)
+    if filename and verify_extension(filename):
+        filename = secure_relative_path(filename)
         filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
         if os.path.isfile(filepath):
             os.remove(os.path.join(app.config['UPLOAD_FOLDER'], filename))
