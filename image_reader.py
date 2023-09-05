@@ -100,7 +100,7 @@ dicom_extensions = set(["dcm", "dic", "dicom"])
 def suggest_folder_name(filepath):
     try:
         print("starting", flush=True)
-        print(filepath)
+        print(filepath, flush=True)
         print(filepath.rsplit('.', 1)[1] in dicom_extensions, flush=True)
         print(filepath.rsplit('.', 1)[1], flush=True)
 
@@ -139,5 +139,6 @@ def suggest_folder_name(filepath):
             print("ending", flush=True)
             return base64.urlsafe_b64encode(summary)
         return ""
-    except BaseException:
+    except BaseException as e:
+        print(e)
         return ""
