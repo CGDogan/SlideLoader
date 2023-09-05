@@ -178,7 +178,7 @@ def finish_upload(token):
     filename = body['filename']
     if filename and verify_extension(filename):
         filename = secure_filename_strict(filename)
-        foldername = suggest_folder_name(tmppath)
+        foldername = suggest_folder_name(tmppath, filename.rsplit('.', 1)[1])
         if foldername != "":
             relpath = foldername + os.sep + filename
         else:

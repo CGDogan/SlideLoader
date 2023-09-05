@@ -97,14 +97,14 @@ dicom_extensions = set(["dcm", "dic", "dicom"])
 
 # For file formats where multiple files are opened together,
 # we should move them to a directory. This function infers a common name.
-def suggest_folder_name(filepath):
+def suggest_folder_name(filepath, extension):
     try:
         print("starting", flush=True)
         print(filepath, flush=True)
-        print(filepath.rsplit('.', 1)[1] in dicom_extensions, flush=True)
-        print(filepath.rsplit('.', 1)[1], flush=True)
+        print(extension in dicom_extensions, flush=True)
+        print(extension, flush=True)
 
-        if filepath.rsplit('.', 1)[1] in dicom_extensions:
+        if extension in dicom_extensions:
             print("c1", flush=True)
 
             # For dicom, use base conversion to efficiently store two UIDs merged.
