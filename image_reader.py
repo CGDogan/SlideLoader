@@ -112,11 +112,12 @@ def suggest_folder_name(filepath, extension):
             ds = dcmread(filepath)
             print("c2", flush=True)
 
-            study_instance_uid = ds[0x0020,0x000D].repval
+            #study_instance_uid = ds[0x0020,0x000D].repval
             series_instance_uid = ds[0x0020,0x000E].repval
             print("c3", flush=True)
 
-            uid = study_instance_uid + ".." + series_instance_uid
+            #uid = study_instance_uid + ".." + series_instance_uid
+            uid = series_instance_uid
             summary = 0
             arr_len = len(uid)
             print("c4", flush=True)
