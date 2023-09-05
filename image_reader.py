@@ -99,6 +99,7 @@ dicom_extensions = set(["dcm", "dic", "dicom"])
 # we should move them to a directory. This function infers a common name.
 def suggest_folder_name(filepath):
     try:
+        print("starting", flush=True)
         if filepath.rsplit('.', 1)[1] in dicom_extensions:
             # For dicom, use base conversion to efficiently store two UIDs merged.
             # This algorithm is arbitrary
@@ -119,6 +120,7 @@ def suggest_folder_name(filepath):
             summary = base64.urlsafe_b64encode(summary).replace("=", "")
             # make it a byte array
             summary = bytes.fromhex(hex(summary)[2:])
+            print("ending", flush=True)
             return base64.urlsafe_b64encode(summary)
         return ""
     except BaseException:
