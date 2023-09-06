@@ -276,7 +276,7 @@ def getSlide(image_name):
     image_name = secure_relative_path(image_name)
     folder = app.config['UPLOAD_FOLDER']
     if os.sep in image_name:
-        folder_and_file = image_name.rsplit(os.split, 1)
+        folder_and_file = image_name.rsplit(os.sep, 1)
         folder = os.path.join(folder, folder_and_file[0])
         image_name = folder_and_file[1]
     if(os.path.isfile(os.path.join(folder, image_name))):
