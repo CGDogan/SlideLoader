@@ -235,6 +235,7 @@ def singleSlide(filepath):
     filepath = secure_relative_path(filepath)
     extended = request.args.get('extended')
     res = dev_utils.getMetadata(os.path.join(app.config['UPLOAD_FOLDER'], filepath), extended, False)
+    res["filepath"] = filepath
     if (hasattr(res, 'error')):
         return flask.Response(json.dumps(res), status=500, mimetype='text/json')
     else:
@@ -257,8 +258,11 @@ def singleThumb(filepath):
 def multiSlide(filepathlist):
     extended = request.args.get('extended')
     filenames = json.loads(filepathlist)
-    paths = [os.path.join(app.config['UPLOAD_FOLDER'], secure_relative_path(filename)) for filename in filenames]
-    res = dev_utils.getMetadataList(paths, extended, False)
+    paths = [secure_relative_path(filename) for filename in filenames]
+    absolute_paths = [os.path.join(app.config['UPLOAD_FOLDER'], path) for path in paths]
+    res = dev_utils.getMetadataList(absolute_paths, extended, False)
+    for i in range(len(absolute_paths)):
+        res[i]["filepath"] = paths[i]
     if (hasattr(res, 'error')):
         return flask.Response(json.dumps(res), status=500, mimetype='text/json')
     else:
