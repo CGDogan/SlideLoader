@@ -230,8 +230,9 @@ def testRoute():
     return '{"Status":"up"}'
 
 
-@app.route("/data/one/<filepath>", methods=['GET'])
+@app.route("/data/one/<path:filepath>", methods=['GET'])
 def singleSlide(filepath):
+    filepath = secure_relative_path(filepath)
     extended = request.args.get('extended')
     res = dev_utils.getMetadata(os.path.join(app.config['UPLOAD_FOLDER'], filepath), extended, False)
     if (hasattr(res, 'error')):
@@ -240,8 +241,9 @@ def singleSlide(filepath):
         return flask.Response(json.dumps(res), status=200, mimetype='text/json')
 
 
-@app.route("/data/thumbnail/<filepath>", methods=['GET'])
+@app.route("/data/thumbnail/<path:filepath>", methods=['GET'])
 def singleThumb(filepath):
+    filepath = secure_relative_path(filepath)
     size = flask.request.args.get('size', default=50, type=int)
     size = min(500, size)
     res = getThumbnail(filepath, size)
@@ -255,7 +257,7 @@ def singleThumb(filepath):
 def multiSlide(filepathlist):
     extended = request.args.get('extended')
     filenames = json.loads(filepathlist)
-    paths = [os.path.join(app.config['UPLOAD_FOLDER'], filename) for filename in filenames]
+    paths = [os.path.join(app.config['UPLOAD_FOLDER'], secure_relative_path(filename)) for filename in filenames]
     res = dev_utils.getMetadataList(paths, extended, False)
     if (hasattr(res, 'error')):
         return flask.Response(json.dumps(res), status=500, mimetype='text/json')
@@ -263,10 +265,18 @@ def multiSlide(filepathlist):
         return flask.Response(json.dumps(res), status=200, mimetype='text/json')
 
 
-@app.route("/getSlide/<image_name>")
+@app.route("/getSlide/<path:image_name>")
 def getSlide(image_name):
-    if(os.path.isfile(os.path.join(app.config['UPLOAD_FOLDER'], image_name))):
-        return flask.send_from_directory(app.config["UPLOAD_FOLDER"], image_name, as_attachment=True)
+    if not verify_extension(image_name):
+        return flask.Response(json.dumps({"error": "Bad image type requested"}), status=400, mimetype='text/json')
+    image_name = secure_relative_path(image_name)
+    folder = app.config['UPLOAD_FOLDER']
+    if os.sep in image_name:
+        folder_and_file = image_name.rsplit(os.split, 1)
+        folder = os.path.join(folder, folder_and_file[0])
+        image_name = folder_and_file[1]
+    if(os.path.isfile(os.path.join(folder, image_name))):
+        return flask.send_from_directory(folder, image_name, as_attachment=True)
     else:
         return flask.Response(json.dumps({"error": "File does not exist"}), status=404, mimetype='text/json')
 
