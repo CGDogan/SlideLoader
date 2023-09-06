@@ -280,6 +280,8 @@ def getSlide(image_name):
         folder = os.path.join(folder, folder_and_file[0])
         image_name = folder_and_file[1]
     print("1", flush=True)
+    print(folder, flush=True)
+    print(image_name, flush=True)
     if(os.path.isfile(os.path.join(folder, image_name))):
         return flask.send_from_directory(folder, image_name, as_attachment=True)
     else:
