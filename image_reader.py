@@ -99,53 +99,29 @@ dicom_extensions = set(["dcm", "dic", "dicom"])
 # we should move them to a directory. This function infers a common name.
 def suggest_folder_name(filepath, extension):
     try:
-        print("starting", flush=True)
-        print(filepath, flush=True)
-        print(extension in dicom_extensions, flush=True)
-        print(extension, flush=True)
-
         if extension in dicom_extensions:
-            print("c1", flush=True)
-
-            # For dicom, use base conversion to efficiently store two UIDs merged.
-            # This algorithm is arbitrary
             ds = dcmread(filepath)
-            print("c2", flush=True)
-
             #study_instance_uid = ds[0x0020,0x000D].repval
             series_instance_uid = ds[0x0020,0x000E].repval
-            print("c3", flush=True)
-
             #uid = study_instance_uid + ".." + series_instance_uid
             uid = series_instance_uid
             summary = 0
-            arr_len = len(uid)
-            print("c4", flush=True)
 
-            for i in range(arr_len):
-                c = uid[i]
+            for c in uid:
                 if c == '.':
                     c = 10
                 else:
                     c = int(c)
                 summary *= 11
                 summary += c
-            print("c4.5", flush=True)
 
             # make it a byte array
             summary = hex(summary)[2:]
-            print("c5", flush=True)
-            print(summary)
             if len(summary) % 2 == 1:
                 summary = '0' + summary
             summary = bytes.fromhex(summary)
-            print("c6", flush=True)
-
             summary = base64.urlsafe_b64encode(summary).decode("ascii").replace("=", "")
-            print("c6", flush=True)
-            print("ending", flush=True)
             return summary
         return ""
-    except BaseException as e:
-        print(e)
+    except:
         return ""
