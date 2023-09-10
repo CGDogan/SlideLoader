@@ -107,7 +107,7 @@ def suggest_folder_name(filepath, extension):
             uid = series_instance_uid
             s = hashlib.md5()
             s.update(uid.encode('ascii'))
-            return s.hexdigest()[:10]
+            return s.hexdigest()
         return ""
     except:
         return ""
