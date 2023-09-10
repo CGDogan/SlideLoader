@@ -85,7 +85,6 @@ def secure_relative_path(filename):
         filename += os.sep
     return filename[:-1]
 
-
 def getThumbnail(filename, size=50):
     filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
     if not os.path.isfile(filepath):
@@ -175,6 +174,7 @@ def finish_upload(token):
     tmppath = os.path.join(app.config['TEMP_FOLDER'], token)
     if not os.path.isfile(tmppath):
         return flask.Response(json.dumps({"error": "Token Not Recognised"}), status=400, mimetype='text/json')
+
     filename = body['filename']
     if filename and verify_extension(filename):
         filename = secure_filename_strict(filename)
@@ -192,6 +192,8 @@ def finish_upload(token):
             return flask.Response(json.dumps({"ended": token, "filepath": filepath, "filename": filename, "relpath": relpath}), status=200, mimetype='text/json')
         else:
             return flask.Response(json.dumps({"error": "File with name '" + filename + "' already exists", "filepath": filepath, "filename": filename}), status=400, mimetype='text/json')
+        # The above return "filename" to show the user the sanitized filename
+        # and on success, return relpath for subsequent SlideLoader calls by the frontend.
     else:
         return flask.Response(json.dumps({"error": "Invalid filename"}), status=400, mimetype='text/json')
 
@@ -269,9 +271,9 @@ def multiSlide(filepathlist):
 
 @app.route("/getSlide/<path:image_name>")
 def getSlide(image_name):
-    image_name = secure_relative_path(image_name)
     if not verify_extension(image_name):
         return flask.Response(json.dumps({"error": "Bad image type requested"}), status=400, mimetype='text/json')
+    image_name = secure_relative_path(image_name)
     folder = app.config['UPLOAD_FOLDER']
     if os.sep in image_name:
         folder_and_file = image_name.rsplit(os.sep, 1)
@@ -666,3 +668,31 @@ def checkDownloadStatus():
         return flask.Response(json.dumps({"downloadDone": True}), status=200, mimetype='text/json')
     return flask.Response(json.dumps({"downloadDone": False}), status=200, mimetype='text/json')
 
+# DICOM Explorer UI and DICOM server hostname and port
+@app.route('/dicomsrv/location', methods=['GET'])
+def guiLocation():
+    port = os.getenv("DICOM_PORT")
+    hostname = os.getenv("DICOM_HOSTNAME")
+    ui_port = os.getenv("DICOM_UI_PORT")
+    ui_hostname = os.getenv("DICOM_UI_HOSTNAME")
+    res = {}
+    if port is not None:
+        res["port"] = int(port)
+    else:
+        print("DICOM_PORT env variable not found")
+
+    if ui_port is not None:
+        res["ui_port"] = int(ui_port)
+    else:
+        print("DICOM_UI_PORT env variable not found")
+
+
+    # If the DICOM server is on a different computer, this can be uncommented,
+    # the frontend will parse this, but it's better to keep this in a comment against env var poisoning
+    # if hostname is not None:
+    #     res["hostname"] = hostname
+    # if ui_hostname is not None:
+    #     res["ui_hostname"] = ui_hostname
+
+    success = "port" in res and "ui_port" in res
+    return flask.Response(json.dumps(res), status=200 if success else 500, mimetype='text/json')
