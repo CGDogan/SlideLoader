@@ -269,17 +269,14 @@ def multiSlide(filepathlist):
 
 @app.route("/getSlide/<path:image_name>")
 def getSlide(image_name):
-    print("a", flush=True)
     image_name = secure_relative_path(image_name)
     if not verify_extension(image_name):
         return flask.Response(json.dumps({"error": "Bad image type requested"}), status=400, mimetype='text/json')
     folder = app.config['UPLOAD_FOLDER']
-    print("x", flush=True)
     if os.sep in image_name:
         folder_and_file = image_name.rsplit(os.sep, 1)
         folder = os.path.join(folder, folder_and_file[0])
         image_name = folder_and_file[1]
-    print("1", flush=True)
     if(os.path.isfile(os.path.join(folder, image_name))):
         return flask.send_from_directory(folder, image_name, as_attachment=True)
     else:
