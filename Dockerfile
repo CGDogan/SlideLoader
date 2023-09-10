@@ -1,4 +1,4 @@
-FROM image-decoders
+FROM camicroscope/image-decoders:latest
 
 WORKDIR /var/www
 RUN apt-get update
