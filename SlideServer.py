@@ -274,9 +274,10 @@ def listFolderContents(absolutepath):
     res = {}
     try:
         relpath = secure_relative_path(os.path.relpath(app.config['UPLOAD_FOLDER'], absolutepath))
-    except:
-        res['error'] = "bad folderpath"
-    absolutepath = os.path.join(app.config['UPLOAD_FOLDER'], relpath)
+        absolutepath = os.path.join(app.config['UPLOAD_FOLDER'], relpath)
+    except BaseException as e:
+        res['error'] = "bad folderpath: " + str(e)
+        return flask.Response(json.dumps(res), status=400, mimetype='text/json')
 
     try:
         res['contents'] = os.listdir(absolutepath)
