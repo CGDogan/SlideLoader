@@ -269,14 +269,11 @@ def multiSlide(filepathlist):
         return flask.Response(json.dumps(res), status=200, mimetype='text/json')
 
 # Used by Caracal; may be removed after our schema fully supports multifile formats in a subdir
-@app.route("/data/folder/<path:absolutepath>", methods=['GET'])
-def listFolderContents(absolutepath):
+@app.route("/data/folder/<path:relpath>", methods=['GET'])
+def listFolderContents(relpath):
     res = {}
     try:
-        print(absolutepath, flush=True)
-        print(app.config['UPLOAD_FOLDER'], flush=True)
-        print(os.path.relpath(app.config['UPLOAD_FOLDER'], absolutepath), flush=True)
-        relpath = secure_relative_path(os.path.relpath(app.config['UPLOAD_FOLDER'], absolutepath))
+        relpath = secure_relative_path(relpath)
         absolutepath = os.path.join(app.config['UPLOAD_FOLDER'], relpath)
     except BaseException as e:
         res['error'] = "bad folderpath: " + str(e)
