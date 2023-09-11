@@ -273,6 +273,9 @@ def multiSlide(filepathlist):
 def listFolderContents(absolutepath):
     res = {}
     try:
+        print(absolutepath)
+        print(app.config['UPLOAD_FOLDER'])
+        print(os.path.relpath(app.config['UPLOAD_FOLDER'], absolutepath))
         relpath = secure_relative_path(os.path.relpath(app.config['UPLOAD_FOLDER'], absolutepath))
         absolutepath = os.path.join(app.config['UPLOAD_FOLDER'], relpath)
     except BaseException as e:
