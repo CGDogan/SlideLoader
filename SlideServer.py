@@ -273,9 +273,10 @@ def multiSlide(filepathlist):
 def listFolderContents(absolutepath):
     res = {}
     try:
-        absolutepath = secure_relative_path(os.path.relpath(app.config['UPLOAD_FOLDER'], absolutepath))
+        relpath = secure_relative_path(os.path.relpath(app.config['UPLOAD_FOLDER'], absolutepath))
     except:
         res['error'] = "bad folderpath"
+    absolutepath = os.path.join(app.config['UPLOAD_FOLDER'], relpath)
 
     try:
         res['contents'] = os.listdir(absolutepath)
