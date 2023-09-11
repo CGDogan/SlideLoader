@@ -268,6 +268,21 @@ def multiSlide(filepathlist):
     else:
         return flask.Response(json.dumps(res), status=200, mimetype='text/json')
 
+# Used by Caracal; may be removed after our schema fully supports multifile formats in a subdir
+@app.route("/data/folder/<absolutepath>", methods=['GET'])
+def listFolderContents(absolutepath):
+    res = {}
+    try:
+        absolutepath = secure_relative_path(os.path.relpath(app.config['UPLOAD_FOLDER'], absolutepath))
+    except:
+        res['error'] = "bad folderpath"
+
+    try:
+        res['contents'] = os.listdir(absolutepath)
+        return flask.Response(json.dumps(res), status=200, mimetype='text/json')
+    except:
+        res['error'] = "folder " + absolutepath + " not found"
+        return flask.Response(json.dumps(res), status=400, mimetype='text/json')
 
 @app.route("/getSlide/<path:image_name>")
 def getSlide(image_name):
