@@ -281,6 +281,7 @@ def listFolderContents(relpath):
 
     try:
         res['contents'] = os.listdir(absolutepath)
+        res['contents'] = [filename for filename in res['contents'] if not filename.startswith('.')]
         return flask.Response(json.dumps(res), status=200, mimetype='text/json')
     except:
         res['error'] = "folder " + absolutepath + " not found"
