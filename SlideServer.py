@@ -284,8 +284,8 @@ def listFolderContents(relpath):
         res['contents'] = [filename for filename in res['contents'] if not filename.startswith('.')]
         return flask.Response(json.dumps(res), status=200, mimetype='text/json')
     except:
-        res['error'] = "folder " + absolutepath + " not found"
-        return flask.Response(json.dumps(res), status=400, mimetype='text/json')
+        res['contents'] = []
+        return flask.Response(json.dumps(res), status=200, mimetype='text/json')
 
 @app.route("/getSlide/<path:image_name>")
 def getSlide(image_name):
