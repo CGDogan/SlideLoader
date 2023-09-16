@@ -75,6 +75,8 @@ def secure_relative_path(filename):
         raise ValueError("Filepath contains '//' which is forbidden")
     if ".." in filename:
         raise ValueError("Filepath contains '..' which is forbidden")
+    if filename[0] == '.':
+        raise ValueError("Filepath starts with '.' (or is '.') which is forbidden")
     level_names = filename.split(os.sep)
     filename = ""
     for name in level_names:
