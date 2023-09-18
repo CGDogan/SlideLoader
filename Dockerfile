@@ -81,6 +81,7 @@ ENV FLASK_DEBUG True
 
 # SimpleLogger documentation: "trace", "debug", "info", "warn", "error" or "off"
 ENV _JAVA_OPTIONS=-Dorg.slf4j.simpleLogger.defaultLogLevel=warn
+ENV BFBRIDGE_LOGLEVEL=INFO
 
 RUN mkdir -p /images/uploading
 
